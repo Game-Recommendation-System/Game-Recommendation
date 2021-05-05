@@ -1,8 +1,5 @@
 package game;
 
-import java.util.Comparator;
-import java.util.Date;
-
 public interface IGame {
 
     /**

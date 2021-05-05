@@ -1,4 +1,4 @@
-package Test;
+package test;
 
 import static org.junit.Assert.*;
 
@@ -12,6 +12,7 @@ import game.Company;
 import game.Game;
 import game.Read;
 import game.Sort;
+import game.Tuple;
 
 public class SortTest {
     
@@ -25,7 +26,7 @@ public class SortTest {
     @Test
     public void testByGameNumber() {
         HashMap<String, Company> companyMap = r.getCompanyMap();
-        game.Tuple t = new game.Tuple(100,155);
+        Tuple t = new Tuple(100,155);
         Map<String, Integer> map = s.byGameNumber(companyMap, false, t);
         assertEquals(map.size(), 2);
         assertEquals((int) map.get("Big Fish Games"), 155);
@@ -34,7 +35,7 @@ public class SortTest {
     @Test
     public void testByAvgRating() {
         HashMap<String, Company> companyMap = r.getCompanyMap();
-        game.Tuple t = new game.Tuple(0.0,8.8);
+        Tuple t = new Tuple(0.0,8.8);
         Map<String, Double> map = s.byAvgRating(companyMap, true, t);
         assertEquals(map.size(), 8812);
         assertEquals((double) map.get("Boncho Games"), 8.8, 0.01);

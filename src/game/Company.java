@@ -56,7 +56,7 @@ public class Company implements ICompany{
     @Override
     public int compareTo(ICompany that) {
         Company companyThat = (Company) that;
-        return this.getName().compareTo(companyThat.getName());
+        return getName().compareTo(companyThat.getName());
     }
     
 }

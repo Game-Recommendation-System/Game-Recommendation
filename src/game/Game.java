@@ -1,7 +1,6 @@
 package game;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Arrays;
 
 public class Game implements IGame{
 
@@ -187,6 +186,16 @@ public class Game implements IGame{
     public int compareTo(IGame that) {
         Game gameThat = (Game) that;
         return this.getName().compareTo(gameThat.getName());
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Game [id=" + id + ", name=" + name + ", company=" + company + ", price=" + price + ", releaseYear="
+                + releaseYear + ", totalNumberOfRatings=" + totalNumberOfRatings + ", rating=" + rating + ", header="
+                + header + ", platforms=" + Arrays.toString(platforms) + ", description=" + description + "]";
     }
     
     
