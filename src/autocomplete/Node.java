@@ -1,5 +1,3 @@
-package autocomplete;
-
 import java.util.HashMap;
 
 /**

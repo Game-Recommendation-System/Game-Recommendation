@@ -1,5 +1,10 @@
-package autocomplete;
-
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.MouseInputAdapter;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -8,40 +13,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Desktop;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.SwingUtilities;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.GroupLayout;
-import javax.swing.BorderFactory;
-import javax.swing.LayoutStyle;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.MouseInputAdapter;
 
-public class AutocompleteGUI extends JFrame {
+public class SearchGUI extends JFrame {
     // for serializable classes
     private static final long serialVersionUID = 1L;
 
@@ -56,8 +29,8 @@ public class AutocompleteGUI extends JFrame {
     // Display top k results
     private final int k;
 
-    // Indicates whether to display weights next to query matches
-    private boolean displayWeights = true;
+//    // Indicates whether to display weights next to query matches
+//    private boolean displayWeights = true;
 
     // List of all the matching terms
     private List<ITerm> matches;
@@ -65,13 +38,12 @@ public class AutocompleteGUI extends JFrame {
     /**
      * Initializes the GUI, and the associated Autocomplete object
      *
-     * @param filename the file to read all the autocomplete data from
      * @param k        the maximum number of suggestions to return
      */
-    public AutocompleteGUI(String filename, int k) {
+    public SearchGUI(int k){
         this.k = k;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Autocomplete Me");
+        setTitle("Search for Games");
         setPreferredSize(new Dimension(DEF_WIDTH, DEF_HEIGHT));
         pack();
         setLocationRelativeTo(null);
@@ -81,46 +53,54 @@ public class AutocompleteGUI extends JFrame {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        final AutocompletePanel ap = new AutocompletePanel(filename);
+        final SearchPanel sp = new SearchPanel();
 
-        JLabel textLabel = new JLabel("Search query:");
-
+        JLabel textLabel = new JLabel("Search game:");
         // Create and add a listener to the Search button
         JButton searchButton = new JButton("Search Google");
+        JLabel image = new JLabel(new ImageIcon("bear.jpeg"));
+        image.setBorder(new EmptyBorder(20,100,50,180));
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                searchOnline(ap.getSelectedText());
+                searchOnline(sp.getSelectedText());
             }
         });
-
-        // Create and add a listener to a "Show weights" checkbox
-        JCheckBox checkbox = new JCheckBox("Show weights", null, displayWeights);
-        checkbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                displayWeights = !displayWeights;
-                ap.update();
-            }
-        });
+//        // Create and add a listener to a "Show weights" checkbox
+//        JCheckBox checkbox = new JCheckBox("Show weights", null);
+//        checkbox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent ae) {
+//                displayWeights = !displayWeights;
+//                sp.update();
+//            }
+//        });
 
         // Define the layout of the window
         layout.setHorizontalGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                .addComponent(textLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                    GroupLayout.PREFERRED_SIZE)
-                .addComponent(checkbox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                    GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-                GroupLayout.DEFAULT_SIZE)
-            .addComponent(ap, 0, GroupLayout.DEFAULT_SIZE, DEF_WIDTH).addComponent(searchButton,
-                GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE));
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addComponent(textLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE))
+//                        .addComponent(image, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+//                                GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.DEFAULT_SIZE)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addComponent(sp, 0, GroupLayout.DEFAULT_SIZE, DEF_WIDTH)
+                        .addComponent(image, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE))
+                .addComponent(searchButton,
+                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(
-                    layout.createSequentialGroup().addComponent(textLabel).addComponent(checkbox))
-                .addComponent(ap).addComponent(searchButton)));
+                .addComponent(image)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(textLabel)
+                        .addComponent(sp)
+                        .addComponent(searchButton)));
+//                        .addGroup(
+//                                layout.createSequentialGroup().addComponent(textLabel))
+//                        .addComponent(sp).addComponent(searchButton).addComponent(image)));
     }
 
     /**
@@ -128,7 +108,7 @@ public class AutocompleteGUI extends JFrame {
      * search bar that text can be entered into, and a drop-down list of suggestions
      * auto-completing the user's query.
      */
-    private class AutocompletePanel extends JPanel {
+    private class SearchPanel extends JPanel {
         // for serializable classes
         private static final long serialVersionUID = 1L;
 
@@ -199,13 +179,12 @@ public class AutocompleteGUI extends JFrame {
          * Creates the Autocomplete object and the search bar and suggestion drop-down
          * portions of the GUI
          *
-         * @param filename the file the Autocomplete object is constructed from
          */
-        public AutocompletePanel(String filename) {
+        public SearchPanel() {
             super();
 
             auto = new Autocomplete2();
-            auto.buildTrie(filename, k);
+            auto.buildTrie(k);
 
             GroupLayout layout = new GroupLayout(this);
             setLayout(layout);
@@ -213,7 +192,7 @@ public class AutocompleteGUI extends JFrame {
             // create the search text, and allow the user to interact with it
             searchText = new JTextField(DEF_COLUMNS);
             searchText.setMaximumSize(new Dimension(searchText.getMaximumSize().width,
-                searchText.getPreferredSize().height));
+                    searchText.getPreferredSize().height));
             searchText.getInputMap().put(KeyStroke.getKeyStroke("UP"), "none");
             searchText.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "none");
             searchText.addFocusListener(new FocusListener() {
@@ -244,7 +223,7 @@ public class AutocompleteGUI extends JFrame {
             suggestions.setVisible(false);
             suggestions.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             suggestions.setMaximumSize(new Dimension(searchText.getMaximumSize().width,
-                suggestions.getPreferredSize().height));
+                    suggestions.getPreferredSize().height));
 
             // Set to make equal to the width of the textfield
             suggestions.setPrototypeCellValue(suggListLen);
@@ -260,9 +239,9 @@ public class AutocompleteGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (!suggestions.isSelectionEmpty()) {
                         String selection = (String) suggestions.getSelectedValue();
-                        if (displayWeights) {
-                            selection = selection.substring(0, selection.indexOf("<td width="));
-                        }
+//                        if (displayWeights) {
+//                            selection = selection.substring(0, selection.indexOf("<td width="));
+//                        }
                         selection = selection.replaceAll("\\<.*?>", "");
                         searchText.setText(selection);
                         getSuggestions(selection);
@@ -310,13 +289,13 @@ public class AutocompleteGUI extends JFrame {
                 }
             };
             suggestions.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke("UP"), "moveSelectionUp");
+                    .put(KeyStroke.getKeyStroke("UP"), "moveSelectionUp");
             suggestions.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke("DOWN"), "moveSelectionDown");
+                    .put(KeyStroke.getKeyStroke("DOWN"), "moveSelectionDown");
             suggestions.getActionMap().put("moveSelectionUp", moveSelectionUp);
             suggestions.getActionMap().put("moveSelectionDown", moveSelectionDown);
             suggestions.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ENTER"),
-                "makeSelection");
+                    "makeSelection");
             suggestions.getInputMap().put(KeyStroke.getKeyStroke("UP"), "moveSelectionUpFocused");
             suggestions.getActionMap().put("moveSelectionUpFocused", moveSelectionUpFocused);
             suggestions.getActionMap().put("makeSelection", makeSelection);
@@ -453,16 +432,16 @@ public class AutocompleteGUI extends JFrame {
 
             // Define the layout of the text box and suggestion dropdown
             layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(searchTextPanel, 0, GroupLayout.DEFAULT_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                    .addComponent(suggestionsPanel, GroupLayout.DEFAULT_SIZE,
-                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(searchTextPanel, 0, GroupLayout.DEFAULT_SIZE,
+                                    GroupLayout.PREFERRED_SIZE)
+                            .addComponent(suggestionsPanel, GroupLayout.DEFAULT_SIZE,
+                                    GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 
             );
 
             layout.setVerticalGroup(layout.createSequentialGroup().addComponent(searchTextPanel)
-                .addComponent(suggestionsPanel));
+                    .addComponent(suggestionsPanel));
         }
 
         /**
@@ -481,9 +460,9 @@ public class AutocompleteGUI extends JFrame {
 
             suggestions.setPreferredSize(new Dimension(suggWidth, suggHeight));
             suggestionsPanel
-                .setPreferredSize(new Dimension(suggPanelWidth, suggHeight + extraMargin));
+                    .setPreferredSize(new Dimension(suggPanelWidth, suggHeight + extraMargin));
             suggestionsPanel
-                .setMaximumSize(new Dimension(suggPanelWidth, suggHeight + extraMargin));
+                    .setMaximumSize(new Dimension(suggPanelWidth, suggHeight + extraMargin));
 
             // redraw the suggestion panel
             suggestionsPanel.setVisible(false);
@@ -535,12 +514,12 @@ public class AutocompleteGUI extends JFrame {
 
                         if (allResults[i] == null) {
                             throw new NullPointerException(
-                                "allMatches() " + "returned an array with a null entry");
+                                    "allMatches() " + "returned an array with a null entry");
                         }
                         int tab = next.indexOf('\t');
                         if (tab < 0) {
                             throw new RuntimeException("allMatches() returned"
-                                + " an array with an entry without a tab:" + " '" + next + "'");
+                                    + " an array with an entry without a tab:" + " '" + next + "'");
                         }
                         String weight = next.substring(0, tab).trim();
                         String query = next.substring(tab).trim();
@@ -552,13 +531,13 @@ public class AutocompleteGUI extends JFrame {
 
                         // create the table HTML
                         results[i] = "<html><table width=\"" + searchText.getPreferredSize().width
-                            + "\">" + "<tr><td align=left>" + query.substring(0, textLen) + "<b>"
-                            + query.substring(textLen) + "</b>";
-                        if (displayWeights) {
-                            results[i] += "<td width=\"10%\" align=right>"
-                                + "<font size=-1><span id=\"weight\" "
-                                + "style=\"float:right;color:gray\">" + weight + "</font>";
-                        }
+                                + "\">" + "<tr><td align=left>" + query.substring(0, textLen) + "<b>"
+                                + query.substring(textLen) + "</b>";
+//                        if (displayWeights) {
+//                            results[i] += "<td width=\"10%\" align=right>"
+//                                    + "<font size=-1><span id=\"weight\" "
+//                                    + "style=\"float:right;color:gray\">" + weight + "</font>";
+//                        }
                         results[i] += "</table></html>";
                     }
                     suggestions.setListData(results);
@@ -578,9 +557,9 @@ public class AutocompleteGUI extends JFrame {
         public String getSelectedText() {
             if (!suggestions.isSelectionEmpty()) {
                 String selection = (String) suggestions.getSelectedValue();
-                if (displayWeights) {
-                    selection = selection.substring(0, selection.indexOf("<td width="));
-                }
+//                if (displayWeights) {
+//                    selection = selection.substring(0, selection.indexOf("<td width="));
+//                }
                 selection = selection.replaceAll("\\<.*?>", "");
                 selection = selection.replaceAll("^[ \t]+|[ \t]+$", "");
                 return selection;
@@ -593,7 +572,6 @@ public class AutocompleteGUI extends JFrame {
             return searchText.getText();
         }
     }
-
     /**
      * Creates a URI from the user-defined string and searches the web with the
      * selected search engine Opens the default web browser (or a new tab if it is
@@ -618,7 +596,7 @@ public class AutocompleteGUI extends JFrame {
             return;
         }
 
-        // open the URL in the browser
+         //open the URL in the browser
         try {
             Desktop.getDesktop().browse(searchAddress);
         } catch (IOException e1) {
@@ -634,13 +612,14 @@ public class AutocompleteGUI extends JFrame {
      *             dropdown menu
      */
     public static void main(String[] args) {
-        final String filename = args[0];
-        final int k = Integer.parseInt(args[1]);
+//        final String filename = args[0];
+        final int k = Integer.parseInt(args[0]);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new AutocompleteGUI(filename, k).setVisible(true);
+                new SearchGUI(k).setVisible(true);
             }
         });
     }
 }
+

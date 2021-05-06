@@ -1,5 +1,3 @@
-package autocomplete;
-
 import java.util.List;
 
 /**
@@ -26,7 +24,7 @@ public interface IAutocomplete {
      *         BufferedReader useful in this situation as it will allow you to read
      *         a file one line at a time.
      */
-    public Node buildTrie(String filename, int k);
+    public Node buildTrie(int k);
 
     /**
      * @return k the the maximum number of suggestions that should be displayed

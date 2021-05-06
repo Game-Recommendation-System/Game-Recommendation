@@ -1,5 +1,3 @@
-package autocomplete;
-
 public class Term implements ITerm {
 
     private String string;

@@ -1,8 +1,3 @@
-package autocomplete;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 public class Autocomplete2 implements IAutocomplete {
@@ -10,6 +5,7 @@ public class Autocomplete2 implements IAutocomplete {
     private Node root;
     private int limitDisplay;
     private List<ITerm> suggestion;
+    private HashMap<Integer, Game> gameMap;
 //    private HashMap<Integer, ITerm> suggestion;
     public Autocomplete2() {
         setRoot(new Node("", 0));
@@ -75,46 +71,54 @@ public class Autocomplete2 implements IAutocomplete {
      *         a file one line at a time.
      */
     @Override
-    public Node buildTrie(String filename, int k) {
+    public Node buildTrie(int k) {
         setLimitDisplay(k);
-        // create bufferedReader
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line = reader.readLine();
-            int range = Integer.parseInt(line);
-            long number = Long.parseLong(line);
-            // create a new Trie
-//            setRoot(new Node("", 0));
-            int index = 0;
-            while ((line = reader.readLine()) != null && index < range) {
-                String[] data = new String[2];
-                line = line.trim();
-                String[] res = line.split("\\s+");
-                if (res.length != 2) {
-                    index++;
-                    continue;
-                }
-                data = res;
-                // add data into the Trie tree
-                // check weight
-                boolean flag = true;
-                // check weight
-                if (data[0].length() == 0) {
-                    flag = false;
-                } else {
-                    for (int i = 0; i < data[0].length(); i++) {
-                        if (!Character.isDigit(data[0].charAt(i))) {
-                            flag = false;
-                        }
-                    }
-                }
-                if (flag) {
-                    addWord(data[1], Long.parseLong(data[0]));
-                }
-                index++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        Read read = new Read();
+        gameMap = read.getGameMap();
+        // create a new Trie
+        setRoot(new Node("", 0));
+        for (Map.Entry<Integer, Game> game: gameMap.entrySet()){
+            String gameName = game.getValue().getName();
+            addWord(gameName,0);
         }
+        // create bufferedReader
+//        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+//            String line = reader.readLine();
+//            int range = Integer.parseInt(line);
+//            long number = Long.parseLong(line);
+//            // create a new Trie
+////            setRoot(new Node("", 0));
+//            int index = 0;
+//            while ((line = reader.readLine()) != null && index < range) {
+//                String[] data = new String[2];
+//                line = line.trim();
+//                String[] res = line.split("\\s+");
+//                if (res.length != 2) {
+//                    index++;
+//                    continue;
+//                }
+//                data = res;
+//                // add data into the Trie tree
+//                // check weight
+//                boolean flag = true;
+//                // check weight
+//                if (data[0].length() == 0) {
+//                    flag = false;
+//                } else {
+//                    for (int i = 0; i < data[0].length(); i++) {
+//                        if (!Character.isDigit(data[0].charAt(i))) {
+//                            flag = false;
+//                        }
+//                    }
+//                }
+//                if (flag) {
+//                    addWord(data[1], Long.parseLong(data[0]));
+//                }
+//                index++;
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return getRoot();
     }
 
