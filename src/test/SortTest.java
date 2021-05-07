@@ -131,9 +131,8 @@ public class SortTest {
     @Test
     public void testByCompanyGame() {
         LinkedHashMap<String, TreeSet<Entry<Integer, Game>>> t = s.byCompanyGame(fullGamesMap, originCompMap);
-        for (Entry<String, TreeSet<Entry<Integer, Game>>> entry : t.entrySet()) {
-            System.out.println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
-       }
+        assertEquals(t.get("Valve").size(), 29);
+        assertEquals(t.get(" I SHOW YOU").size(), 1);
     }
 
 

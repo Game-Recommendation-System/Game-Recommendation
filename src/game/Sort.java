@@ -346,9 +346,12 @@ public class Sort implements ISort {
         return result;
     }
     
-    
+    /**
+     * a helper function that returns the game map with key being the company name
+     * @param gameMap
+     * @return a map with key being the company name and value being the game set for that company
+     */
     private Map<String, TreeSet<Entry<Integer, Game>>> compGameMap(Map<Integer, Game> gameMap){
-        
         Map<String, TreeSet<Entry<Integer, Game>>> map = new HashMap();
         for (Map.Entry<Integer,Game> e : gameMap.entrySet()) {
             String compName = e.getValue().getCompany();
@@ -367,6 +370,9 @@ public class Sort implements ISort {
          
     }
     
+    /**
+     * the comparator to compare games
+     */
     static class PairComparator implements Comparator<SimpleEntry<Integer, Game>> {
         @Override
         public int compare(SimpleEntry<Integer, Game> o1, SimpleEntry<Integer, Game> o2) {
@@ -376,9 +382,6 @@ public class Sort implements ISort {
         }
     }
     
-    
-    
-
     @Override
     public LinkedHashMap<String, TreeSet<Entry<Integer, Game>>> byCompanyGame(
             Map<Integer, Game> gameMap, Map<String, Company> compMap) {

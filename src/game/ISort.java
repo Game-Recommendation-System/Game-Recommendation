@@ -85,7 +85,15 @@ public interface ISort {
     public TreeSet<Entry<Integer, Game>> byThreeConditions(Set<Game> games, 
             String priceString, String ratingString, String tag, boolean order, 
             Map<String, Set<String>> tagMap);
-
+    
+    
+    /**
+     * Search companies by 1. number of games 2. average ratings
+     * and return a hashmap with the corresponding treeset of all games with that company
+     * @param gameMap the game map
+     * @param compMap the company map
+     * @return a linked hashmap with key being the name of company and value being the game set
+     */
     LinkedHashMap<String, TreeSet<Entry<Integer, Game>>> byCompanyGame(Map<Integer, Game> gameMap,
             Map<String, Company> compMap);
 
