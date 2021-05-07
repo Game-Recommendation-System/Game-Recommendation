@@ -1,3 +1,5 @@
+package autocomplete;
+
 import java.util.Comparator;
 
 /**

@@ -1,66 +1,27 @@
 package game;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import constant.Constants;
+
 public class Sort implements ISort {
 
-    public Sort() {
-
-    }
-
     @Override
-    public Map<String, Integer> byGameNumber(Map<String, Company> map, boolean order, Tuple interval) {
-        List<Entry<String, Company>> list = new LinkedList<>(map.entrySet());
-
-        // Sorting the list based on values
-        Collections.sort(list, new Comparator<Entry<String, Company>>() {
-            @Override
-            public int compare(Entry<String, Company> o1, Entry<String, Company> o2) {
-                Company o1C = (Company) o1.getValue();
-                Company o2C = (Company) o2.getValue();
-
-                if (!order) {
-                    if (o1C.getGameNumber() < o2C.getGameNumber()) {
-                        return 1;
-                    }
-                    if (o1C.getGameNumber() > o2C.getGameNumber()) {
-                        return -1;
-                    }
-                    return o1.getKey().compareTo(o2.getKey());
-                } else {
-                    if (o1C.getGameNumber() > o2C.getGameNumber()) {
-                        return 1;
-                    }
-                    if (o1C.getGameNumber() < o2C.getGameNumber()) {
-                        return -1;
-                    }
-                    return o1.getKey().compareTo(o2.getKey());
-                }
-            }
-        });
-
-        // Maintaining insertion order with the help of LinkedList
-        Map<String, Integer> sortedMap = new LinkedHashMap<>();
-        for (Entry<String, Company> entry : list) {
-            int low = (int) interval.getLeft();
-            int high = (int) interval.getRight();
-            if (entry.getValue().getGameNumber() >= low && entry.getValue().getGameNumber() <= high) {
-                sortedMap.put(entry.getKey(), entry.getValue().getGameNumber());
-            }
-        }
-
-        return sortedMap;
-
-    }
-
-    @Override
-    public Map<String, Double> byAvgRating(Map<String, Company> map, boolean order, Tuple interval) {
+    public Map<String, Double> byAvgRating(Map<String, Company> map, boolean order, 
+            Tuple<Double, Double> interval) {
         List<Entry<String, Company>> list = new LinkedList<>(map.entrySet());
 
         Collections.sort(list, new Comparator<Entry<String, Company>>() {
@@ -91,9 +52,10 @@ public class Sort implements ISort {
 
         Map<String, Double> sortedMap = new LinkedHashMap<>();
         for (Entry<String, Company> entry : list) {
-            Double low = (double) interval.getLeft();
-            Double high = (double) interval.getRight();
-            if (entry.getValue().getAverageRating() >= low && entry.getValue().getAverageRating() <= high) {
+            Double low = interval.getLeft();
+            Double high = interval.getRight();
+            if (entry.getValue().getAverageRating() >= low 
+                    && entry.getValue().getAverageRating() <= high) {
                 sortedMap.put(entry.getKey(), entry.getValue().getAverageRating());
             }
 
@@ -103,50 +65,35 @@ public class Sort implements ISort {
     }
 
     @Override
-    public Map<String, Double> byPrice(Map<Integer, Game> map, boolean order, Tuple interval) {
-        List<Entry<Integer, Game>> list = new LinkedList<>(map.entrySet());
+    public TreeMap<Double, TreeSet<Entry<Integer, Game>>> byPrice(Set<Game> games) {
+        TreeMap<Double, TreeSet<Entry<Integer, Game>>> treeMap = new TreeMap<>();
+        for (Game game : games) {
+            double price = game.getPrice();
+            if (!treeMap.containsKey(price)) {
+                TreeSet<Entry<Integer, Game>> set = new TreeSet<>(
+                        new Comparator<Entry<Integer, Game>>() {
 
-        Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
-            @Override
-            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
-                Game o1G = (Game) o1.getValue();
-                Game o2G = (Game) o2.getValue();
-
-                if (!order) {
-                    if (o1G.getPrice() < o2G.getPrice()) {
-                        return 1;
-                    }
-                    if (o1G.getPrice() > o2G.getPrice()) {
-                        return -1;
-                    }
-                    return o1G.getName().compareTo(o2G.getName());
-                } else {
-                    if (o1G.getPrice() > o2G.getPrice()) {
-                        return 1;
-                    }
-                    if (o1G.getPrice() < o2G.getPrice()) {
-                        return -1;
-                    }
-                    return o1G.getName().compareTo(o2G.getName());
-                }
+                            @Override
+                            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
+                                Game game1 = o1.getValue();
+                                Game game2 = o2.getValue();                        
+                                return game1.getName().compareTo(game2.getName());
+                            }
+                        });
+                set.add(new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
+                treeMap.put(price, set);
+            } else {
+                treeMap.get(price).add(
+                        new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
             }
-        });
-
-        Map<String, Double> sortedMap = new LinkedHashMap<>();
-        for (Entry<Integer, Game> entry : list) {
-            Double low = (double) interval.getLeft();
-            Double high = (double) interval.getRight();
-            if (entry.getValue().getPrice() >= low && entry.getValue().getPrice() <= high) {
-                sortedMap.put(entry.getValue().getName(), entry.getValue().getPrice());
-            }
-
         }
-
-        return sortedMap;
+        
+        return treeMap;
     }
 
     @Override
-    public Map<String, Integer> byReleaseYear(Map<Integer, Game> map, boolean order, Tuple interval) {
+    public Map<String, Integer> byReleaseYear(Map<Integer, Game> map, boolean order, 
+            Tuple<Integer, Integer> interval) {
         List<Entry<Integer, Game>> list = new LinkedList<>(map.entrySet());
 
         Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
@@ -177,9 +124,10 @@ public class Sort implements ISort {
 
         Map<String, Integer> sortedMap = new LinkedHashMap<>();
         for (Entry<Integer, Game> entry : list) {
-            int low = (int) interval.getLeft();
-            int high = (int) interval.getRight();
-            if (entry.getValue().getReleaseYear() >= low && entry.getValue().getReleaseYear() <= high) {
+            int low = interval.getLeft();
+            int high = interval.getRight();
+            if (entry.getValue().getReleaseYear() >= low 
+                    && entry.getValue().getReleaseYear() <= high) {
                 sortedMap.put(entry.getValue().getName(), entry.getValue().getReleaseYear());
             }
 
@@ -189,242 +137,212 @@ public class Sort implements ISort {
     }
 
     @Override
-    public Map<String, Integer> byTotalRatings(Map<Integer, Game> map, boolean order, Tuple interval) {
-        List<Entry<Integer, Game>> list = new LinkedList<>(map.entrySet());
+    public TreeMap<Integer, TreeSet<Entry<Integer, Game>>> byTotalRatings(
+            Map<Integer, Game> map) {
+        TreeMap<Integer, TreeSet<Entry<Integer, Game>>> treeMap = new TreeMap<>();
+        for (Map.Entry<Integer, Game> entry : map.entrySet()) {
+            Game game = entry.getValue();
+            int totalRatings = game.getTotalNumberOfRatings();
+            if (!treeMap.containsKey(totalRatings)) {
+                TreeSet<Entry<Integer, Game>> set = new TreeSet<>(
+                        new Comparator<Entry<Integer, Game>>() {
 
-        Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
-            @Override
-            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
-                Game o1G = (Game) o1.getValue();
-                Game o2G = (Game) o2.getValue();
-
-                if (!order) {
-                    if (o1G.getTotalNumberOfRatings() < o2G.getTotalNumberOfRatings()) {
-                        return 1;
-                    }
-                    if (o1G.getTotalNumberOfRatings() > o2G.getTotalNumberOfRatings()) {
-                        return -1;
-                    }
-                    return o1G.getName().compareTo(o2G.getName());
-                } else {
-                    if (o1G.getTotalNumberOfRatings() > o2G.getTotalNumberOfRatings()) {
-                        return 1;
-                    }
-                    if (o1G.getTotalNumberOfRatings() < o2G.getTotalNumberOfRatings()) {
-                        return -1;
-                    }
-                    return o1G.getName().compareTo(o2G.getName());
-                }
+                            @Override
+                            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
+                                Game game1 = o1.getValue();
+                                Game game2 = o2.getValue();                        
+                                return game1.getName().compareTo(game2.getName());
+                            }
+                        });
+                set.add(new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
+                treeMap.put(totalRatings, set);
+            } else {
+                treeMap.get(game.getTotalNumberOfRatings()).add(
+                        new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
             }
-        });
-
-        Map<String, Integer> sortedMap = new LinkedHashMap<>();
-        for (Entry<Integer, Game> entry : list) {
-            int low = (int) interval.getLeft();
-            int high = (int) interval.getRight();
-            if (entry.getValue().getTotalNumberOfRatings() >= low
-                    && entry.getValue().getTotalNumberOfRatings() <= high) {
-                sortedMap.put(entry.getValue().getName(), entry.getValue().getTotalNumberOfRatings());
-            }
-
         }
-
-        return sortedMap;
+        
+        return treeMap;
+    }
+    
+    @Override
+    public Set<Game> byLeastTotalRating(
+            TreeMap<Integer, TreeSet<Entry<Integer, Game>>> map, int totalRatings) {
+        Set<Game> set = new HashSet<>();
+        SortedMap<Integer, TreeSet<Entry<Integer, Game>>> subMap = map.subMap(totalRatings, 
+                        Constants.INFINITE);
+        for (Map.Entry<Integer, TreeSet<Entry<Integer, Game>>> entry : subMap.entrySet()) {
+            TreeSet<Entry<Integer, Game>> treeSet = entry.getValue();
+            for (Map.Entry<Integer, Game> innerEntry : treeSet) {
+                set.add(innerEntry.getValue());
+            }
+        }
+        return set;
     }
 
     @Override
-    public Map<String, Double> byRatings(Map<Integer, Game> map, boolean order, Tuple interval) {
-        List<Entry<Integer, Game>> list = new LinkedList<>(map.entrySet());
+    public TreeMap<Double, TreeSet<Entry<Integer, Game>>> byRating(Set<Game> games) {
+        TreeMap<Double, TreeSet<Entry<Integer, Game>>> treeMap = new TreeMap<>(
+                new Comparator<Double>() {
 
-        Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
-            @Override
-            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
-                Game o1G = (Game) o1.getValue();
-                Game o2G = (Game) o2.getValue();
-
-                if (!order) {
-                    if (o1G.getRating() < o2G.getRating()) {
-                        return 1;
+                    @Override
+                    public int compare(Double o1, Double o2) {
+                        double result = o2 - o1;
+                        if (result < 0) {
+                            return -1;
+                        } else if (result == 0) {
+                            return 0;
+                        } else {
+                            return 1;
+                        }
                     }
-                    if (o1G.getRating() > o2G.getRating()) {
-                        return -1;
-                    }
-                    return o1G.getName().compareTo(o2G.getName());
-                } else {
-                    if (o1G.getRating() > o2G.getRating()) {
-                        return 1;
-                    }
-                    if (o1G.getRating() < o2G.getRating()) {
-                        return -1;
-                    }
-                    return o1G.getName().compareTo(o2G.getName());
                 }
-            }
-        });
+                );
+        for (Game game : games) {
+            double rating = game.getRating();
+            if (!treeMap.containsKey(rating)) {
+                TreeSet<Entry<Integer, Game>> set = new TreeSet<>(
+                        new Comparator<Entry<Integer, Game>>() {
 
-        Map<String, Double> sortedMap = new LinkedHashMap<>();
-        for (Entry<Integer, Game> entry : list) {
-            Double low = (double) interval.getLeft();
-            Double high = (double) interval.getRight();
-            if (entry.getValue().getRating() >= low && entry.getValue().getRating() <= high) {
-                sortedMap.put(entry.getValue().getName(), entry.getValue().getRating());
+                            @Override
+                            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
+                                Game game1 = o1.getValue();
+                                Game game2 = o2.getValue();                        
+                                return game1.getName().compareTo(game2.getName());
+                            }
+                        });
+                set.add(new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
+                treeMap.put(rating, set);
+            } else {
+                treeMap.get(rating).add(
+                        new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
             }
-
         }
-
-        return sortedMap;
+        
+        return treeMap;
     }
 
-//    @Override
-//    public Map<String, Object> byCompany(Map<String, Company> compMap, Map<Integer, Game> gameMap, boolean order,
-//            Tuple interval, boolean num) {
-//        List<Entry<Integer, Game>> list = new LinkedList<>(gameMap.entrySet());
-//        if (num) {
-//            Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
-//                @Override
-//                public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
-//                    Game o1G = (Game) o1.getValue();
-//                    Game o2G = (Game) o2.getValue();
-//
-//                    if (!order) {
-//                        if (compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            if (compMap.get(o1G.getCompany()).getGameNumber() < compMap.get(o2G.getCompany())
-//                                    .getGameNumber()) {
-//                                return 1;
-//                            }
-//                            if (compMap.get(o1G.getCompany()).getGameNumber() > compMap.get(o2G.getCompany())
-//                                    .getGameNumber()) {
-//                                return -1;
-//                            }
-//                        }
-//                        
-//                        if (!compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && !compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//
-//                        // if company not in dataset, just sort by name
-//                        return o1G.getName().compareTo(o2G.getName());
-//                    } else {
-//                        if (compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            if (compMap.get(o1G.getCompany()).getGameNumber() > compMap.get(o2G.getCompany())
-//                                    .getGameNumber()) {
-//                                return 1;
-//                            }
-//                            if (compMap.get(o1G.getCompany()).getGameNumber() < compMap.get(o2G.getCompany())
-//                                    .getGameNumber()) {
-//                                return -1;
-//                            }
-//                            
-//                        }
-//                        
-//                        if (!compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && !compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        return o1G.getName().compareTo(o2G.getName());
-//                    }
-//                }
-//            });
-//
-//        } else {
-//            Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
-//                @Override
-//                public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
-//                    Game o1G = (Game) o1.getValue();
-//                    Game o2G = (Game) o2.getValue();
-//
-//                    if (!order) {
-//                        if (compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            if (compMap.get(o1G.getCompany()).getAverageRating() < compMap.get(o2G.getCompany())
-//                                    .getAverageRating()) {
-//                                return 1;
-//                            }
-//                            if (compMap.get(o1G.getCompany()).getAverageRating() > compMap.get(o2G.getCompany())
-//                                    .getAverageRating()) {
-//                                return -1;
-//                            }
-//                        }
-//                        
-//                        if (!compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && !compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//
-//                        return o1G.getName().compareTo(o2G.getName());
-//                    } else {
-//                        if (compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            if (compMap.get(o1G.getCompany()).getAverageRating() > compMap.get(o2G.getCompany())
-//                                    .getAverageRating()) {
-//                                return 1;
-//                            }
-//                            if (compMap.get(o1G.getCompany()).getAverageRating() < compMap.get(o2G.getCompany())
-//                                    .getAverageRating()) {
-//                                return -1;
-//                            }
-//                        }
-//                        
-//                        if (!compMap.containsKey(o1G.getCompany()) && compMap.containsKey(o2G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        if (!compMap.containsKey(o2G.getCompany()) && !compMap.containsKey(o1G.getCompany())) {
-//                            return o1G.getName().compareTo(o2G.getName());
-//                        }
-//                        
-//                        return o1G.getName().compareTo(o2G.getName());
-//                    }
-//                }
-//            });
-//        }
-//        Map<String, Object> sortedMap = new LinkedHashMap<>();
-//        for (Entry<Integer, Game> entry : list) {
-//            if (num) {
-//                Integer low = (int) interval.getLeft();
-//                Integer high = (int) interval.getRight();
-//                if (compMap.get(entry.getValue()).getGameNumber() >= low
-//                        && compMap.get(entry.getValue()).getGameNumber() <= high) {
-//                    sortedMap.put(entry.getValue().getName(), entry.getValue().getCompany());
-//                }
-//            } else {
-//                Double low = (double) interval.getLeft();
-//                Double high = (double) interval.getRight();
-//                if (compMap.get(entry.getValue()).getAverageRating() >= low
-//                        && compMap.get(entry.getValue()).getAverageRating() <= high) {
-//                    sortedMap.put(entry.getValue().getName(), entry.getValue().getCompany());
-//                }
-//            }
-//
-//        }
-//
-//        return sortedMap;
-//    }
+    @Override
+    public List<Game> byCompany(Map<Integer, Game> gameMap, boolean order, String company) {
+        List<Entry<Integer, Game>> list = new LinkedList<>();
+        for (Map.Entry<Integer, Game> entry : gameMap.entrySet()) {
+            if (entry.getValue().getCompany().equals(company)) {
+                list.add(new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue()));
+            }
+        }
+        Collections.sort(list, new Comparator<Entry<Integer, Game>>() {
+
+            @Override
+            public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
+                if (!order) {
+                    return o2.getKey() - o1.getKey();
+                }
+                return o1.getKey() - o2.getKey();
+            }
+        });
+        List<Game> games = new LinkedList<>();
+        for (Map.Entry<Integer, Game> entry : list) {
+            games.add(entry.getValue());
+        }
+        return games;
+    }
+
+    @Override
+    public Set<Game> searchByTag(Set<Game> games, Map<String, Set<String>> tagMap, 
+            String tag) {
+        Set<Game> set = new HashSet<>();
+        Set<String> names = tagMap.get(tag);
+        for (Game game : games) {
+            if (names.contains(game.getName())) {
+                set.add(game);
+            }
+        }
+        return set;
+    }
+
+    @Override
+    public TreeSet<Entry<Integer, Game>> byThreeConditions(Set<Game> games, 
+            String priceString, String ratingString, String tag, boolean order, 
+            Map<String, Set<String>> tagMap) {
+        if ("".equals(priceString) && "".equals(ratingString) && "".equals(tag)) {
+            return new TreeSet<>();
+        }
+        Set<Game> set = new HashSet<>(games);
+        
+        // filter by tag
+        if (!"".equals(tag)) {
+            set = searchByTag(games, tagMap, tag);
+        }
+        
+        // filter by price
+        if (!"".equals(priceString)) {
+            double price = Double.parseDouble(priceString.split(Constants.SPLIT_DOUBLE)[0]);
+            TreeMap<Double, TreeSet<Entry<Integer, Game>>> map = byPrice(set);
+            set = new HashSet<>();
+            SortedMap<Double, TreeSet<Entry<Integer, Game>>> sortedMap;
+            if (price < 100) {
+                sortedMap = map.subMap(price, price + 10);
+            } else {
+                sortedMap = map.subMap(price, (double) Constants.INFINITE);
+            }
+            for (TreeSet<Entry<Integer, Game>> treeSet : sortedMap.values()) {
+                for (Map.Entry<Integer, Game> entry : treeSet) {
+                    set.add(entry.getValue());
+                }
+            }     
+        }
+        
+        // filter by rating
+        if (!"".equals(ratingString)) {
+            double rating = Double.parseDouble(ratingString.split(Constants.SPLIT_DOUBLE)[0]);
+            TreeMap<Double, TreeSet<Entry<Integer, Game>>> map = byRating(set);
+            set = new HashSet<>();
+            SortedMap<Double, TreeSet<Entry<Integer, Game>>> sortedMap;
+            if (rating < 8) {
+                sortedMap = map.subMap(rating + 2, rating);
+            } else {
+                sortedMap = map.subMap(10.1, rating);
+            }
+            for (TreeSet<Entry<Integer, Game>> treeSet : sortedMap.values()) {
+                for (Map.Entry<Integer, Game> entry : treeSet) {
+                    set.add(entry.getValue());
+                }
+            }
+        }
+        TreeSet<Entry<Integer, Game>> result = new TreeSet<>(
+                new Comparator<Entry<Integer, Game>>() {
+
+                    @Override
+                    public int compare(Entry<Integer, Game> o1, Entry<Integer, Game> o2) {
+                        Game game1 = o1.getValue();
+                        Game game2 = o2.getValue();
+                        double rating1 = game1.getRating();
+                        double rating2 = game2.getRating();
+                        if (rating1 == rating2) {
+                            double price1 = game1.getPrice();
+                            double price2 = game2.getPrice();
+                            if (price1 == price2) {
+                                if (order) {
+                                    return game1.getName().compareTo(game2.getName());
+                                }
+                                return game2.getName().compareTo(game1.getName());
+                            }
+                            if (order) {
+                                return price1 > price2 ? 1 : -1;
+                            }
+                            return price1 > price2 ? -1 : 1;
+                        }
+                        if (order) {
+                            return rating1 > rating2 ? -1 : 1;
+                        }
+                        return rating1 > rating2 ? 1 : -1;
+                    }
+        });
+        for (Game game : set) {
+            result.add(new AbstractMap.SimpleEntry<Integer, Game>(game.getId(), game));
+        }
+        return result;
+    }
+
 
 }

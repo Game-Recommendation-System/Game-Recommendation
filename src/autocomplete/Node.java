@@ -1,3 +1,5 @@
+package autocomplete;
+
 import java.util.HashMap;
 
 /**
@@ -13,7 +15,6 @@ public class Node {
     private Term term;
     private int words;
     private int prefixes;
-//    protected Node[] references;
     protected HashMap<Integer, Node> references;
 
     // CONSTRUCTOR
@@ -22,7 +23,6 @@ public class Node {
             throw new IllegalArgumentException("invalid node");
         }
         term = new Term(word, weight);
-//        references = new Node[26];
         references = new HashMap<>();
         words = 0;
         prefixes = 0;
@@ -31,7 +31,6 @@ public class Node {
     public Node() {
         term = null;
         references = new HashMap<>();
-//        references = new Node[26];
         words = 0;
         prefixes = 0;
     }
@@ -65,9 +64,6 @@ public class Node {
         this.prefixes = prefixes;
     }
 
-//    protected Node[] getReferences() {
-//        return references;
-//    }
     protected HashMap<Integer, Node> getReferences() {
         return references;
     }
@@ -75,8 +71,5 @@ public class Node {
     protected void setReferences(HashMap<Integer, Node> references) {
         this.references = references;
     }
-//    protected void setReferences(Node[] references) {
-//        this.references = references;
-//    }
 
 }

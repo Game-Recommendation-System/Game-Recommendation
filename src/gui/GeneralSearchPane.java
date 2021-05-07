@@ -1,8 +1,13 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.MouseInputAdapter;
+
+import autocomplete.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -14,23 +19,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchGUI extends JInternalFrame {
+public class GeneralSearchPane extends JInternalFrame {
     // for serializable classes
     private static final long serialVersionUID = 1L;
 
     private static final int DEF_WIDTH = 850; // width of the GUI
-    // window
     private static final int DEF_HEIGHT = 600; // height of the GUI
-    // window
 
     // URL prefix for searches
-    private static final String SEARCH_URL = "https://www.google.com/search?q=";
+    private static final String SEARCH_URL = "https://store.steampowered.com/search/?term=";
 
     // Display top k results
-    private final int k;
-
-//    // Indicates whether to display weights next to query matches
-//    private boolean displayWeights = true;
+    private static final int K = 7;
 
     // List of all the matching terms
     private List<ITerm> matches;
@@ -40,13 +40,11 @@ public class SearchGUI extends JInternalFrame {
      *
      * @param k        the maximum number of suggestions to return
      */
-    public SearchGUI(int k){
-        this.k = k;
+    public GeneralSearchPane(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Search for Games");
         setPreferredSize(new Dimension(DEF_WIDTH, DEF_HEIGHT));
         pack();
-//        setLocationRelativeTo(null);
         Container content = getContentPane();
         GroupLayout layout = new GroupLayout(content);
         content.setLayout(layout);
@@ -66,23 +64,12 @@ public class SearchGUI extends JInternalFrame {
                 searchOnline(sp.getSelectedText());
             }
         });
-//        // Create and add a listener to a "Show weights" checkbox
-//        JCheckBox checkbox = new JCheckBox("Show weights", null);
-//        checkbox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent ae) {
-//                displayWeights = !displayWeights;
-//                sp.update();
-//            }
-//        });
 
         // Define the layout of the window
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                         .addComponent(textLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE))
-//                        .addComponent(image, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-//                                GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                         GroupLayout.DEFAULT_SIZE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
@@ -98,10 +85,6 @@ public class SearchGUI extends JInternalFrame {
                         .addComponent(textLabel)
                         .addComponent(sp)
                         .addComponent(searchButton)));
-
-//                        .addGroup(
-//                                layout.createSequentialGroup().addComponent(textLabel))
-//                        .addComponent(sp).addComponent(searchButton).addComponent(image)));
     }
 
     /**
@@ -110,65 +93,16 @@ public class SearchGUI extends JInternalFrame {
      * auto-completing the user's query.
      */
     private class SearchPanel extends JPanel {
-        // for serializable classes
+
         private static final long serialVersionUID = 1L;
 
-        private final JTextField searchText; // the
-        // search
-        // bar
-        private IAutocomplete auto; // the
-        // Autocomplete
-        // object
-        private String[] results = new String[k]; // an
-        // array
-        // of
-        // matches
-        //// private JList<String> suggestions; // a list of autocomplete
-        //// matches (Java 7)
-        private JList suggestions; // a
-        // list
-        // of
-        // autocomplete
-        // matches
-        // (Java
-        // 6)
-        private JScrollPane scrollPane; // the
-        // scroll
-        // bar
-        // on
-        // the
-        // side
-        // of
-        // the
-        private JPanel suggestionsPanel; // the
-        // dropdown
-        // menu
-        // of
-        // suggestions
-        private int extraMargin = 5; // extra
-        // room
-        // to
-        // leave
-        // at
-        // the
-        // bottom
-        // of
-        // the
-        // suggestion
-        // drop-down
-        // below
-        // the
-        // last
-        // suggestion
-
-        // Note: can't use JList<String> in Java 6
-
-        // TODO: change how this is implemented so it is dynamic;
-        // shouldn't have to define a column number.
-
-        // Keep these next two values in sync! - used to keep the search box
-        // the same width as the drop-down
-        // DEF_COLUMNS should be the number of characters in suggListLen
+        private final JTextField searchText;
+        private IAutocomplete auto;
+        private String[] results = new String[K];
+        private JList<String> suggestions;
+        private JScrollPane scrollPane;
+        private JPanel suggestionsPanel;
+        private int extraMargin = 5;
 
         // number of columns in the search text that is kept
         private final int DEF_COLUMNS = 45;
@@ -185,7 +119,7 @@ public class SearchGUI extends JInternalFrame {
             super();
 
             auto = new Autocomplete2();
-            auto.buildTrie(k);
+            auto.buildTrie(K);
 
             GroupLayout layout = new GroupLayout(this);
             setLayout(layout);
@@ -219,7 +153,7 @@ public class SearchGUI extends JInternalFrame {
             int cellHeight = 20;
 
             // suggestions = new JList<String>(results);
-            suggestions = new JList(results);
+            suggestions = new JList<String>(results);
             suggestions.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             suggestions.setVisible(false);
             suggestions.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -336,7 +270,7 @@ public class SearchGUI extends JInternalFrame {
             suggestions.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent mouseEvent) {
-                    JList theList = (JList) mouseEvent.getSource();
+                    JList<String> theList = (JList<String>) mouseEvent.getSource();
                     if (mouseEvent.getClickCount() >= 1) {
                         int index = theList.locationToIndex(mouseEvent.getPoint());
                         if (index >= 0) {
@@ -351,7 +285,7 @@ public class SearchGUI extends JInternalFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent mouseEvent) {
-                    JList theList = (JList) mouseEvent.getSource();
+                    JList<String> theList = (JList<String>) mouseEvent.getSource();
                     int index = theList.locationToIndex(mouseEvent.getPoint());
                     theList.requestFocusInWindow();
                     theList.setSelectedIndex(index);
@@ -368,7 +302,7 @@ public class SearchGUI extends JInternalFrame {
 
                 // Google a term when a user clicks on the dropdown menu
                 public void mouseClicked(MouseEvent mouseEvent) {
-                    JList theList = (JList) mouseEvent.getSource();
+                    JList<String> theList = (JList<String>) mouseEvent.getSource();
                     if (mouseEvent.getClickCount() >= 1) {
                         int index = theList.locationToIndex(mouseEvent.getPoint());
                         if (index >= 0) {
@@ -383,7 +317,7 @@ public class SearchGUI extends JInternalFrame {
 
                 @Override
                 public void mouseEntered(MouseEvent mouseEvent) {
-                    JList theList = (JList) mouseEvent.getSource();
+                    JList<String> theList = (JList<String>) mouseEvent.getSource();
                     int index = theList.locationToIndex(mouseEvent.getPoint());
                     theList.requestFocusInWindow();
                     theList.setSelectedIndex(index);
@@ -391,7 +325,7 @@ public class SearchGUI extends JInternalFrame {
 
                 @Override
                 public void mouseMoved(MouseEvent mouseEvent) {
-                    JList theList = (JList) mouseEvent.getSource();
+                    JList<String> theList = (JList<String>) mouseEvent.getSource();
                     int index = theList.locationToIndex(mouseEvent.getPoint());
                     theList.requestFocusInWindow();
                     theList.setSelectedIndex(index);
@@ -450,8 +384,8 @@ public class SearchGUI extends JInternalFrame {
          * containing panel vertically
          */
         private void updateListSize() {
-            int rows = k;
-            if (suggestions.getModel().getSize() < k) {
+            int rows = K;
+            if (suggestions.getModel().getSize() < K) {
                 rows = suggestions.getModel().getSize();
             }
 
@@ -470,10 +404,6 @@ public class SearchGUI extends JInternalFrame {
             suggestionsPanel.setVisible(true);
         }
 
-        // see getSuggestions for documentation
-        public void update() {
-            getSuggestions(searchText.getText());
-        }
 
         /**
          * Makes a call to the implementation of Autocomplete to get suggestions for the
@@ -505,8 +435,8 @@ public class SearchGUI extends JInternalFrame {
                     throw new NullPointerException("allMatches() is null");
                 }
 
-                results = new String[Math.min(k, allResults.length)];
-                if (Math.min(k, allResults.length) > 0) {
+                results = new String[Math.min(K, allResults.length)];
+                if (Math.min(K, allResults.length) > 0) {
                     for (int i = 0; i < results.length; i++) {
 
                         // A bit of a hack to get the Term's query string
@@ -522,7 +452,7 @@ public class SearchGUI extends JInternalFrame {
                             throw new RuntimeException("allMatches() returned"
                                     + " an array with an entry without a tab:" + " '" + next + "'");
                         }
-                        String weight = next.substring(0, tab).trim();
+
                         String query = next.substring(tab).trim();
 
                         // truncate length if needed
@@ -534,11 +464,6 @@ public class SearchGUI extends JInternalFrame {
                         results[i] = "<html><table width=\"" + searchText.getPreferredSize().width
                                 + "\">" + "<tr><td align=left>" + query.substring(0, textLen) + "<b>"
                                 + query.substring(textLen) + "</b>";
-//                        if (displayWeights) {
-//                            results[i] += "<td width=\"10%\" align=right>"
-//                                    + "<font size=-1><span id=\"weight\" "
-//                                    + "style=\"float:right;color:gray\">" + weight + "</font>";
-//                        }
                         results[i] += "</table></html>";
                     }
                     suggestions.setListData(results);
@@ -558,9 +483,6 @@ public class SearchGUI extends JInternalFrame {
         public String getSelectedText() {
             if (!suggestions.isSelectionEmpty()) {
                 String selection = (String) suggestions.getSelectedValue();
-//                if (displayWeights) {
-//                    selection = selection.substring(0, selection.indexOf("<td width="));
-//                }
                 selection = selection.replaceAll("\\<.*?>", "");
                 selection = selection.replaceAll("^[ \t]+|[ \t]+$", "");
                 return selection;
@@ -587,8 +509,8 @@ public class SearchGUI extends JInternalFrame {
         try {
             URI tempAddress = new URI(SEARCH_URL + URLEncoder.encode(s.trim(), "UTF-8"));
             searchAddress = new URI(tempAddress.toASCIIString()); // Hack to
-            // handle
-            // Unicode
+            
+            // handle Unicode
         } catch (URISyntaxException e2) {
             e2.printStackTrace();
             return;
@@ -604,22 +526,5 @@ public class SearchGUI extends JInternalFrame {
             e1.printStackTrace();
         }
     }
-
-    /**
-     * Creates an AutocompleteGUI object and start it continuously running
-     *
-     * @param args the integer k which defines the maximum number of objects in the
-     *             dropdown menu
-     */
-    public static void main(String[] args) {
-//        final String filename = args[0];
-        final int k = Integer.parseInt(args[0]);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new SearchGUI(k).setVisible(true);
-            }
-        });
-    }
+    
 }
-

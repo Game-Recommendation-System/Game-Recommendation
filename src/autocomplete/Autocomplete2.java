@@ -1,12 +1,16 @@
+package autocomplete;
+
 import java.util.*;
+
+import game.*;
+import helper.LoaderHelper;
 
 public class Autocomplete2 implements IAutocomplete {
 
     private Node root;
     private int limitDisplay;
     private List<ITerm> suggestion;
-    private HashMap<Integer, Game> gameMap;
-//    private HashMap<Integer, ITerm> suggestion;
+    private Map<Integer, Game> gameMap;
     public Autocomplete2() {
         setRoot(new Node("", 0));
     }
@@ -19,10 +23,6 @@ public class Autocomplete2 implements IAutocomplete {
      */
     @Override
     public void addWord(String word, long weight) {
-        // check words are valid
-//        if (word == null || word.length() == 0) {
-//            return;
-//        }
         for (int i = 0; i < word.length(); i++) {
             if (!Character.isLetter(word.charAt(i))) {
                 return;
@@ -36,13 +36,11 @@ public class Autocomplete2 implements IAutocomplete {
         String rest = word;
         while (rest.length() != 0) {
             int pos = rest.charAt(0) - 'a';
-//            if (temp.getReferences()[pos] == null) {
             if (!temp.getReferences().containsKey(pos)) {
                 // add a new node
                 rest = rest.substring(1);
                 Node addedNode = new Node();
                 temp.getReferences().put(pos,addedNode);
-//                temp.getReferences()[pos] = addedNode;
                 temp.setPrefixes(temp.getPrefixes() + 1);
             } else {
                 // if it is filled
@@ -50,7 +48,6 @@ public class Autocomplete2 implements IAutocomplete {
                 temp.setPrefixes(temp.getPrefixes() + 1);
             }
             // move to next level
-//            temp = temp.getReferences()[pos];
             temp = temp.getReferences().get(pos);
         }
         // at the end of the word
@@ -73,52 +70,13 @@ public class Autocomplete2 implements IAutocomplete {
     @Override
     public Node buildTrie(int k) {
         setLimitDisplay(k);
-        Read read = new Read();
-        gameMap = read.getGameMap();
+        gameMap = LoaderHelper.readGames("Game.csv");
         // create a new Trie
         setRoot(new Node("", 0));
         for (Map.Entry<Integer, Game> game: gameMap.entrySet()){
             String gameName = game.getValue().getName();
             addWord(gameName,0);
         }
-        // create bufferedReader
-//        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-//            String line = reader.readLine();
-//            int range = Integer.parseInt(line);
-//            long number = Long.parseLong(line);
-//            // create a new Trie
-////            setRoot(new Node("", 0));
-//            int index = 0;
-//            while ((line = reader.readLine()) != null && index < range) {
-//                String[] data = new String[2];
-//                line = line.trim();
-//                String[] res = line.split("\\s+");
-//                if (res.length != 2) {
-//                    index++;
-//                    continue;
-//                }
-//                data = res;
-//                // add data into the Trie tree
-//                // check weight
-//                boolean flag = true;
-//                // check weight
-//                if (data[0].length() == 0) {
-//                    flag = false;
-//                } else {
-//                    for (int i = 0; i < data[0].length(); i++) {
-//                        if (!Character.isDigit(data[0].charAt(i))) {
-//                            flag = false;
-//                        }
-//                    }
-//                }
-//                if (flag) {
-//                    addWord(data[1], Long.parseLong(data[0]));
-//                }
-//                index++;
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         return getRoot();
     }
 
@@ -221,11 +179,7 @@ public class Autocomplete2 implements IAutocomplete {
         Node commonNode = getSubTrie(prefix);
         dfs(commonNode, prefix);
         Collections.sort(getSuggestionArray());
-//            ITerm.byReverseWeightOrder().thenComparing(ITerm.byPrefixOrder(prefix.length())));
-//        if (getSuggestionArray().size() <= numberSuggestions()) {
         return getSuggestionArray();
-//        }
-//        return getSuggestionArray().subList(0, numberSuggestions());
     }
 
     private void dfs(Node node, String path) {
@@ -234,20 +188,11 @@ public class Autocomplete2 implements IAutocomplete {
             getSuggestionArray().add(newTerm);
             return;
         }
-//        for (int i = 0; i < 26; i++) {
-//            if (node.getReferences()[i] != null) {
-//                int target = 'a' + i;
-//                char chr = (char) target;
-//                dfs(node.getReferences()[i], path+chr);
-////                path = path.substring(0,path.length()-1);
-//            }
         for (Map.Entry<Integer, Node> curr: node.getReferences().entrySet()){
             int target = 'a' + curr.getKey();
             char chr = (char) target;
             dfs(node.getReferences().get(curr.getKey()), path+chr);
-//                path = path.substring(0,path.length()-1);
         }
-//        }
         return;
     }
 

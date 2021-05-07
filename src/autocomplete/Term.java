@@ -1,3 +1,5 @@
+package autocomplete;
+
 public class Term implements ITerm {
 
     private String string;
@@ -8,15 +10,6 @@ public class Term implements ITerm {
         if (query == null || weight < 0) {
             throw new IllegalArgumentException("invalid");
         }
-//        if (!query.equals("")) {
-//            for (int i = 0; i < query.length(); i++) {
-//                if (query.charAt(i) > 'z' || query.charAt(i) < 'A'
-//                        || (query.charAt(i) < 'a' && query.charAt(i) > 'Z'))  {
-//                    throw new IllegalArgumentException("invalid");
-//                }
-//            }
-//        }
-//        query = query.toLowerCase();
         setString(query);
         setWeight(weight);
     }

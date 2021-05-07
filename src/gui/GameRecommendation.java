@@ -1,116 +1,186 @@
 package gui;
 
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.beans.PropertyVetoException;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import game.Company;
-import game.Game;
+import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+
 
 public class GameRecommendation {
+
+    private JDesktopPane desktopPane;
+    private JFrame frame;
+    private JLabel backLabel;
+    private JMenuBar menuBar = new JMenuBar();
     
-    private Map<Integer, Game> games;
-    private Map<String, Company> companys;
+    // menu
+    private JMenu searchMenu = new JMenu("Search(S)");
+    private JMenu portfolio = new JMenu("Portfolio(P)");
+    private JMenu history = new JMenu("History(H)");
+    private JMenu company = new JMenu("Company(C)");
+    
+    // search menu item
+    private JMenuItem generalSearchItem = new JMenuItem("General Search");
+    private JMenuItem conditionalSearchItem = new JMenuItem("Conditional Search");
+    
+    // portfolio item
+    private JMenuItem newlyReleasedItem = new JMenuItem("Newly Released");
+    private JMenuItem freeItem = new JMenuItem("Free");
+    private JMenuItem topRatingItem = new JMenuItem("Top Rating");
+    
+    // history item
+    private JMenuItem historyItem = new JMenuItem("History");
+    
+    // company item
+    private JMenuItem companyItem = new JMenuItem("Company");
+    
+    // create the map of frames
+    private Map<String, JInternalFrame> ifs = new HashMap<>();
+    
     
     public GameRecommendation() {
-        readGames("Game.csv");
-        readCompany("Company.csv");
+        frame = new JFrame("Game Recommendation System");
+        frame.getContentPane().setBackground(new Color(105, 165, 205));
+        frame.addComponentListener(new FrameListener());
+        frame.getContentPane().setLayout(new BorderLayout());
+        frame.setBounds(20, 20, 1120, 710);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        backLabel = new JLabel(); // background label
+        backLabel.setVerticalAlignment(SwingConstants.TOP);
+        backLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        updateBackgroundImage();
+        desktopPane = new JDesktopPane();
+        desktopPane.add(backLabel, Integer.MIN_VALUE);
+        frame.getContentPane().add(desktopPane);
+        initMenu();
     }
     
     /**
-     * Helper function for reading in all data from .csv file
-     * and configure game map
-     * @param filename The filename of the data source
+     * Init the menu bar
      */
-    private void readGames(String filename) {
-        games = new HashMap<>();
-
-        try {
-            FileReader fileReader = new FileReader(filename);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            bufferedReader.readLine();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] contents = line.split(",");
-                
-                // get description
-                StringBuilder description = new StringBuilder();
-                for (int i = 9; i < contents.length; i++) {
-                    description.append(contents[i]);
-                }
-                
-                // platforms
-                String[] platforms = contents[3].split(";");
-                
-                // get release year
-                int releaseYear;
-                DateTimeFormatter formatter = DateTimeFormatter.
-                        ofPattern("yyyy/M/d", Locale.ENGLISH);
-                try {
-                    LocalDate date = LocalDate.parse(contents[5], formatter);
-                    releaseYear = date.getYear();
-                } catch (DateTimeParseException e) {
-                    continue;
-                }
-                
-                Game game = new Game(Integer.parseInt(contents[0]), contents[1], contents[2], 
-                        platforms, Double.parseDouble(contents[4]), releaseYear, 
-                        Integer.parseInt(contents[6]), Double.parseDouble(contents[7]), 
-                        contents[8], description.toString());
-                games.put(game.getId(), game); // store in map
-            }
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void initMenu() {       
+        generalSearchItem.addActionListener(new openFrameAction(
+                "GeneralSearchPane"));
+        conditionalSearchItem.addActionListener(new openFrameAction(
+                "ConditionalSearchPane"));
+        searchMenu.add(generalSearchItem);
+        searchMenu.add(conditionalSearchItem);
+        menuBar.add(searchMenu);
+        
+        newlyReleasedItem.addActionListener(new openFrameAction(
+                "NewlyReleasedPane"));
+        topRatingItem.addActionListener(new openFrameAction(
+                "TopRatingPane"));
+        freeItem.addActionListener(new openFrameAction("FreePane"));
+        portfolio.add(topRatingItem);
+        portfolio.add(newlyReleasedItem);
+        portfolio.add(freeItem);
+        menuBar.add(portfolio);
+        
+        historyItem.addActionListener(new openFrameAction(
+                "HistoryPane"));
+        history.add(historyItem);
+        menuBar.add(history);
+        
+        companyItem.addActionListener(new openFrameAction(
+                "CompanyPane"));
+        company.add(companyItem);
+        menuBar.add(company);
+        
+        frame.add(menuBar, "North");
+        frame.setVisible(true);
     }
     
-    /**
-     * Helper function for reading in all data from .csv file
-     * and configure company map
-     * @param filename The filename of the data source
-     */
-    private void readCompany(String filename) {
-        companys = new HashMap<>();
-        
-        try {
-            FileReader fileReader = new FileReader(filename);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            bufferedReader.readLine();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] contents = line.split(",");
-                int length = contents.length;
-                
-                // get company name
-                StringBuilder stringBuilder = new StringBuilder();
-                for (int i = 0; i < length - 2; i++) {
-                    stringBuilder.append(contents[i]);
-                }
-                
-                Company company = new Company(stringBuilder.toString(), 
-                        Integer.parseInt(contents[length - 2]), 
-                        Double.parseDouble(contents[length - 1]));
-                companys.put(company.getName(), company);
-            }
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(companys.size());
-        
-    }
-
-    public static void main(String[] args) throws Exception {
-        // TODO Auto-generated method stub
+    
+    public static void main(String[] args) {
         new GameRecommendation();
     }
-
+    
+    
+    /*************************Internal Classes*************************/
+    /**
+     * Frame Listener
+     * @author yifan
+     *
+     */
+    private final class FrameListener extends ComponentAdapter {
+        public void componentResized(final ComponentEvent e) {
+            updateBackgroundImage();
+        }
+    }
+    
+    
+    /**
+     * main JMenu item listener
+     * @author yifan
+     *
+     */
+    protected final class openFrameAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+        private String frameName = null;
+        private openFrameAction(String frameName) {
+            this.frameName = frameName;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JInternalFrame jFrame = getIFrame(frameName);
+            jFrame.addInternalFrameListener(new InternalFrameAdapter() {
+                public void internalFrameClosed(InternalFrameEvent e) {
+                    ifs.remove(frameName);
+                }
+            });
+            if (jFrame.getDesktopPane() == null) {
+                desktopPane.add(jFrame);
+                jFrame.setVisible(true);
+            }
+            
+            try {
+                jFrame.setSelected(true);
+            } catch (PropertyVetoException e1) {
+                e1.printStackTrace();
+            }
+        }
+        
+    }
+    
+    /************************Helper Functions*************************/
+    /**
+     * Update the background Image
+     */
+    private void updateBackgroundImage() {
+        if (backLabel != null) {
+            int backw = frame.getWidth();
+            int backh = frame.getHeight();
+            backLabel.setSize(backw, backh);
+            backLabel.setIcon(new ImageIcon("welcome.jpg"));
+        }
+    }
+    
+    // get the unique internal JFrame
+    private JInternalFrame getIFrame(String frameName) {
+        JInternalFrame jf = null;
+        if (!ifs.containsKey(frameName)) {
+            try {
+                Class<?> fClass = Class.forName("gui." + frameName);
+                Constructor<?> constructor = fClass.getConstructor(null);
+                jf = (JInternalFrame) constructor.newInstance(null);
+                ifs.put(frameName, jf);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            jf = ifs.get(frameName);
+        }
+        return jf;
+    }
+    
 }
