@@ -1,9 +1,6 @@
 package test;
 
 import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -13,14 +10,10 @@ import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.source.tree.AssertTree;
-
 import constant.Constants;
 import game.Company;
 import game.Game;
-import game.Read;
 import game.Sort;
-import game.Tuple;
 import helper.LoaderHelper;
 
 public class SortTest {
@@ -38,21 +31,12 @@ public class SortTest {
     @Before
     public void setUp() throws Exception {
         originGamesMap = LoaderHelper.readGames(Constants.GAME_TEST_FILE);
-        originCompMap = LoaderHelper.readCompany(Constants.COMP_TEST_FILE);
+        originCompMap = LoaderHelper.readCompany(Constants.COMPANY_FILE);
         fullGamesMap = LoaderHelper.readGames(Constants.GAME_FILE);
         tagMap = LoaderHelper.readTags(Constants.TAG_FILE);
         mapByTotalRating = s.byTotalRatings(originGamesMap);
     }
     
-//    @Test
-//    public void testByAvgRating() {
-//        HashMap<String, Company> companyMap = r.getCompanyMap();
-//        Tuple t = new Tuple(0.0,8.8);
-//        Map<String, Double> map = s.byAvgRating(companyMap, true, t);
-//        assertEquals(map.size(), 8812);
-//        assertEquals((double) map.get("Boncho Games"), 8.8, 0.01);
-//    }
-//    
     @Test
     public void testByPrice() {
         Set<Game> set = s.byLeastTotalRating(mapByTotalRating, 0);
@@ -66,14 +50,16 @@ public class SortTest {
         assertEquals("Zombie Exodus: Safe Haven", treeSet.last().getValue().getName());
     }
     
-//    @Test
-//    public void testByReleaseYear() {
-//        HashMap<Integer, Game> gameMap = r.getGameMap();
-//        game.Tuple t = new game.Tuple(2001, 2004);
-//        Map<String, Integer> map = s.byReleaseYear(gameMap, false, t);
-//        assertEquals(map.size(), 13);
-//        assertEquals((int) map.get("Day of Defeat"), 2003);
-//    }
+    @Test
+    public void testByReleaseYear() {
+        Set<Game> set = s.byLeastTotalRating(mapByTotalRating, 0);
+        TreeMap<Integer, TreeSet<Entry<Integer, Game>>> map = s.byReleaseYear(set);
+        assertEquals(9, map.size());
+        TreeSet<Entry<Integer, Game>> treeSet = map.get(2016);
+        assertEquals(4, treeSet.size());
+        assertEquals(413150, (int) treeSet.first().getKey());
+        assertEquals(275850, (int) treeSet.last().getKey());
+    }
     
     @Test
     public void testTotalRatings() {
@@ -127,13 +113,13 @@ public class SortTest {
         treeSet = s.byThreeConditions(set, "", "", "", true, tagMap);
         assertTrue(treeSet.isEmpty());
     }
-    
+
     @Test
-    public void testByCompanyGame() {
-        LinkedHashMap<String, TreeSet<Entry<Integer, Game>>> t = s.byCompanyGame(fullGamesMap, originCompMap);
-        assertEquals(t.get("Valve").size(), 29);
-        assertEquals(t.get(" I SHOW YOU").size(), 1);
+    public void testByCompany() {
+        TreeMap<String, TreeSet<Entry<Integer, Game>>> map = 
+                s.byCompany(originCompMap, fullGamesMap);
+        assertEquals("Big Fish Games", map.firstKey());
+        assertEquals(453390, (int) map.firstEntry().getValue().last().getKey());
+        assertEquals(596270, (int) map.firstEntry().getValue().first().getKey());
     }
-
-
 }

@@ -1,6 +1,6 @@
 package game;
 
-public class Company implements ICompany{
+public class Company implements ICompany {
     
     /**
      * Name of that company
@@ -56,7 +56,15 @@ public class Company implements ICompany{
     @Override
     public int compareTo(ICompany that) {
         Company companyThat = (Company) that;
-        return getName().compareTo(companyThat.getName());
+        int gameNumber = companyThat.getGameNumber();
+        if (this.gameNumber == gameNumber) {
+            double average = companyThat.getAverageRating();
+            if (averageRating == average) {
+                return name.compareTo(companyThat.getName());
+            }
+            return averageRating > average ? -1 : 1;
+        }
+        return gameNumber - this.gameNumber;
     }
     
 }

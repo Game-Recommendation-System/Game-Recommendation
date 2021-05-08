@@ -1,8 +1,6 @@
 package game;
 
-import java.util.Comparator;
-
-public interface ICompany extends Comparable<ICompany>{
+public interface ICompany extends Comparable<ICompany> {
 
     /**
      * @return the name

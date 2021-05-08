@@ -1,8 +1,5 @@
 package game;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -12,24 +9,18 @@ import java.util.Map.Entry;
 public interface ISort {
     
     /**
-     * sort by average of ratings
-     * @return a sorted map with key being the company name and value being average ratings
-     */
-    public Map<String, Double> byAvgRating(Map<String, Company> map, boolean order, 
-            Tuple<Double, Double> interval);
-    
-    /**
      * sort the average of price
      * @return a sorted map with key being the game name and value being the price
      */
     public TreeMap<Double, TreeSet<Entry<Integer, Game>>> byPrice(Set<Game> games);
     
     /**
-     * compare the release year
-     * @return a sorted map with key being the game name and value being the released year
+     * sort by the release year
+     * @param games, game set
+     * @return a sorted map with key being the release year and value being all the games
+     * released in that year
      */
-    public Map<String, Integer> byReleaseYear(Map<Integer, Game> map, boolean order,
-            Tuple<Integer, Integer> interval);
+    public TreeMap<Integer, TreeSet<Entry<Integer, Game>>> byReleaseYear(Set<Game> games);
     
     /**
      * sort the total ratings
@@ -56,13 +47,6 @@ public interface ISort {
     public TreeMap<Double, TreeSet<Entry<Integer, Game>>> byRating(Set<Game> games);
     
     /**
-     * sort by company
-     * @return a sorted map with key being the game name
-     * and the value being the selected company sort method
-     */
-    public List<Game> byCompany(Map<Integer, Game> gameMap, boolean order, String company);
-    
-    /**
      * search by tag
      * @param games Game set after filtering by least total ratings
      * @param tagMap tag map of tag-game names pair
@@ -86,17 +70,15 @@ public interface ISort {
             String priceString, String ratingString, String tag, boolean order, 
             Map<String, Set<String>> tagMap);
     
-    
-    /**
-     * Search companies by 1. number of games 2. average ratings
-     * and return a hashmap with the corresponding treeset of all games with that company
-     * @param gameMap the game map
-     * @param compMap the company map
-     * @return a linked hashmap with key being the name of company and value being the game set
-     */
-    LinkedHashMap<String, TreeSet<Entry<Integer, Game>>> byCompanyGame(Map<Integer, Game> gameMap,
-            Map<String, Company> compMap);
 
-    
+    /**
+     * Sort the game by company's popularity (first number of games, then average rating, finally
+     * game name)
+     * @param companyMap
+     * @param gameMap
+     * @return a TreeMap of secondary key Company
+     */
+    TreeMap<String, TreeSet<Entry<Integer, Game>>> byCompany(Map<String, Company> companyMap, 
+            Map<Integer, Game> gameMap);
     
 }

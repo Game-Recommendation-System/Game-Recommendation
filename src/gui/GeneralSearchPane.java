@@ -41,7 +41,6 @@ public class GeneralSearchPane extends JInternalFrame {
      * @param k        the maximum number of suggestions to return
      */
     public GeneralSearchPane(){
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Search for Games");
         setPreferredSize(new Dimension(DEF_WIDTH, DEF_HEIGHT));
         pack();
@@ -50,12 +49,15 @@ public class GeneralSearchPane extends JInternalFrame {
         content.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+        
+        setIconifiable(true);
+        setClosable(true);
 
         final SearchPanel sp = new SearchPanel();
 
         JLabel textLabel = new JLabel("Search game:");
         // Create and add a listener to the Search button
-        JButton searchButton = new JButton("Search Google");
+        JButton searchButton = new JButton("Search Steam");
         JLabel image = new JLabel(new ImageIcon("bear.jpeg"));
         image.setBorder(new EmptyBorder(20,100,50,180));
         searchButton.addActionListener(new ActionListener() {

@@ -2,7 +2,7 @@ package game;
 
 import java.util.Arrays;
 
-public class Game implements IGame{
+public class Game implements IGame {
 
     /**
      * Identifier of a certain game
@@ -67,7 +67,8 @@ public class Game implements IGame{
      * @param header
      * @param description
      */
-    public Game(int id, String name, String company, String[] platforms, double price, int releaseYear,
+    public Game(int id, String name, String company, String[] platforms, double price, 
+            int releaseYear,
             int totalNumberOfRatings, double rating, String header, String description) {
         this.id = id;
         this.name = name;
@@ -193,11 +194,27 @@ public class Game implements IGame{
      */
     @Override
     public String toString() {
-        return "Game [id=" + id + ", name=" + name + ", company=" + company + ", price=" + price + ", releaseYear="
-                + releaseYear + ", totalNumberOfRatings=" + totalNumberOfRatings + ", rating=" + rating + ", header="
-                + header + ", platforms=" + Arrays.toString(platforms) + ", description=" + description + "]";
+        return "Game [id=" + id + ", name=" + name + ", company=" + company + ", "
+                + "price=" + price + ", releaseYear=" + releaseYear + ", "
+                + "totalNumberOfRatings=" + totalNumberOfRatings + ", rating=" + rating 
+                + ", header=" + header + ", platforms=" + Arrays.toString(platforms) 
+                + ", description=" + description + "]";
     }
     
-    
+    /**
+     * Create the content for JLabel
+     * @return a string of html content for JLabel
+     */
+    public String getPost() {
+        String text = "<html><div>\r\n" + 
+                "<img src='" + header + "' alt='error.jpg' width='200' height='150'/>\r\n" + 
+                "<div><h4>" + name + "</h4>"
+                + "<p> " + company + " published in " + releaseYear + "</p>\r\n" + 
+                "<div>$" + price + "</div><div>rating: " + rating + "</div>\r\n" + 
+                "<div>" + totalNumberOfRatings + " comments</div>\r\n" + 
+                "<div>platforms: " + Arrays.toString(platforms) + "</div>\r\n" + 
+                "</div></div></html>";
+        return text;
+    }
     
 }

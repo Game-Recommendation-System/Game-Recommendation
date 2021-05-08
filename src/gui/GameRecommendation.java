@@ -51,7 +51,7 @@ public class GameRecommendation {
         frame.getContentPane().setBackground(new Color(105, 165, 205));
         frame.addComponentListener(new FrameListener());
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.setBounds(20, 20, 1120, 710);
+        frame.setBounds(20, 20, 1120, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         backLabel = new JLabel(); // background label
         backLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -108,7 +108,7 @@ public class GameRecommendation {
     /*************************Internal Classes*************************/
     /**
      * Frame Listener
-     * @author yifan
+     * @author Fan Yi
      *
      */
     private final class FrameListener extends ComponentAdapter {

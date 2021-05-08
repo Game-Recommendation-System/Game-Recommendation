@@ -44,14 +44,11 @@ public class ConditionalSearchPane extends JInternalFrame {
         TreeMap<Integer, TreeSet<Entry<Integer, Game>>> map2 = sort.byTotalRatings(gameMap);
         games = sort.byLeastTotalRating(map2, Constants.LEASTTOTALRATINGS);
         treeSet = new TreeSet<>();
-//        addInternalFrameListener(new InternalFrameAdapter() {
-//            
-//        });
         setIconifiable(true);
         setClosable(true);
         setTitle("Conditional Search");
         getContentPane().setLayout(new GridBagLayout());
-        setBounds(100, 100, 1000, 375);
+        setBounds(100, 100, 1000, 500);
         
         // price box
         setupComponent(new JLabel("  price: "), 0, 0, 1, 1, false);
@@ -101,20 +98,21 @@ public class ConditionalSearchPane extends JInternalFrame {
         final GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.anchor = GridBagConstraints.NORTH;
-        gridBagConstraints.insets = new Insets(0, 10, 5, 10);
+        gridBagConstraints.insets = new Insets(0, 5, 5, 5);
         gridBagConstraints.fill = GridBagConstraints.BOTH;
-        gridBagConstraints.gridwidth = 15;
+        gridBagConstraints.gridwidth = 20;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         getContentPane().add(scrollPane, gridBagConstraints);       
         
         table = new JTable();
         table.setEnabled(false);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         defaultTableModel = (DefaultTableModel) table.getModel();
         String[] head = new String[] {"Name", "Company", "Platform", "Price", 
                 "Release Year", "Rating", "Description"};
         defaultTableModel.setColumnIdentifiers(head);
+        table.getColumnModel().getColumn(6).setPreferredWidth(2000);
         scrollPane.setViewportView(table);
     }
     
