@@ -22,7 +22,7 @@ Download the code (.zip), and you can access the user interface in either ways:
 
 1. run in command line - get the path of GameRecommendation.java
 
-    java path
+    ```java path```
 
 2. run in Java IDEs - run /src/gui/GameRecommendation.java
 
