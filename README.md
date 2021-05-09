@@ -6,7 +6,7 @@ By Fan Yi, Tong Fu, Hanye Wang
 
 ## Introduction
 
-![Main Interface](/Users/tongfu/Desktop/main.png)
+![Main Interface](figures/main.png)
 
 Finding a game that fits your mind is not an easy task. This game recommendation application aims to help you solve this tricky issue. It collects information of tons of game in steam, including their names, companies, release date, price, rating, description, etc, and the users can customize the filters to find the ideal game(s), and get more information about the game they are looking for.
 
@@ -48,13 +48,13 @@ Package 6: test
 
      Implemented autocomplete for search in the database. The user will be directed to the Steam game page for the game he/she searches after clicking the search button.
 
-     ![Alt Text](/Users/tongfu/Desktop/general.gif)
+     ![Alt Text](figures/general.gif)
 
    * Conditional Search
 
      The user is able to filter based on the price, rating, and tag. Results will be displayed in the order of rating (highest on top), and if there is a tie, the second comparison will be made based off of the price. There is also a reverse order option.
 
-     ![Alt Text](/Users/tongfu/Desktop/conditional.gif)
+     ![Alt Text](figures/conditional.gif)
 
 2. Portfolio
 
@@ -62,31 +62,31 @@ Package 6: test
 
      The game recommendation system will randomly choose four games (as a group) to display. Price, ratings, # of comments, platforms, and released year will be shown below a figure of the game (if there is no available figure, an error image will be the replacement).
 
-     ![Alt Text](/Users/tongfu/Desktop/topR.gif)
+     ![Alt Text](figures/topR.gif)
 
    * Newly Released
 
      The game will be sorted based on the release year. Four as a group of recommendations is available. 
 
-     ![Alt Text](/Users/tongfu/Desktop/newReleased.gif)
+     ![Alt Text](figures/newReleased.gif)
 
    * Free
 
      An option that will randomly pick four as a group of recommendated games that is for free. 
 
-     ![Alt Text](/Users/tongfu/Desktop/free.gif)
+     ![Alt Text](figures/free.gif)
 
 3. History
 
    This pane will generate a tabulated list of games that is the most popular in year from 1998 to 2019. The release year, name, company, price, rating, and a short description will be displayed. 
 
-   ![Alt Text](/Users/tongfu/Desktop/history.gif)
+   ![Alt Text](figures/history.gif)
 
 4. Company
 
    This option generates games from popular companies (sorted by number of ratings). All four games shown in one group are from the same company.
 
-   ![Alt Text](/Users/tongfu/Desktop/company.gif)
+   ![Alt Text](figures/company.gif)
 
 ## Future improvements
 
