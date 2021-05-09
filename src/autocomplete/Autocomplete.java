@@ -23,11 +23,6 @@ public class Autocomplete implements IAutocomplete {
      */
     @Override
     public void addWord(String word, long weight) {
-        for (int i = 0; i < word.length(); i++) {
-            if (!Character.isLetter(word.charAt(i))) {
-                return;
-            }
-        }
         if (weight < 0) {
             return;
         }
@@ -118,12 +113,6 @@ public class Autocomplete implements IAutocomplete {
 
         Node temp = getRoot();
 
-        for (int i = 0; i < prefix.length(); i++) {
-            if (!Character.isLetter(prefix.charAt(i))) {
-                return null;
-            }
-        }
-
         prefix = prefix.toLowerCase();
 
         int i = 0;
@@ -168,11 +157,7 @@ public class Autocomplete implements IAutocomplete {
         if (getSubTrie(prefix) == null) {
             return getSuggestionArray();
         }
-        for (int i = 0; i < prefix.length(); i++) {
-            if (!Character.isLetter(prefix.charAt(i))) {
-                return getSuggestionArray();
-            }
-        }
+
         prefix = prefix.toLowerCase();
         Node commonNode = getSubTrie(prefix);
         dfs(commonNode, prefix);
