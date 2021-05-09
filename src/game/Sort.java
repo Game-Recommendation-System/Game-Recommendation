@@ -14,6 +14,11 @@ import constant.Constants;
 
 public class Sort implements ISort {
 
+    /**
+     * sort game by price, from low to high
+     * @param games The set of games
+     * @return sorted treemap of games
+     */
     @Override
     public TreeMap<Double, TreeSet<Entry<Integer, Game>>> byPrice(Set<Game> games) {
         TreeMap<Double, TreeSet<Entry<Integer, Game>>> treeMap = new TreeMap<>();
@@ -41,6 +46,11 @@ public class Sort implements ISort {
         return treeMap;
     }
 
+    /**
+     * sort games by the year of release, the games released in the same year is gathered together
+     * @param games, game set
+     * @return the sorted treemap
+     */
     @Override
     public TreeMap<Integer, TreeSet<Entry<Integer, Game>>> byReleaseYear(Set<Game> games) {
         TreeMap<Integer, TreeSet<Entry<Integer, Game>>> treeMap = new TreeMap<>();
@@ -76,6 +86,11 @@ public class Sort implements ISort {
         return treeMap;
     }
 
+    /**
+     * sort games by total number of ratings.
+     * @param map The map contains games
+     * @return the sorted treemap
+     */
     @Override
     public TreeMap<Integer, TreeSet<Entry<Integer, Game>>> byTotalRatings(
             Map<Integer, Game> map) {
@@ -104,7 +119,12 @@ public class Sort implements ISort {
         
         return treeMap;
     }
-    
+
+    /**
+     * get the set of games with the least total number of ratings.
+     * @param map The map contains games
+     * @return sorted set
+     */
     @Override
     public Set<Game> byLeastTotalRating(
             TreeMap<Integer, TreeSet<Entry<Integer, Game>>> map, int totalRatings) {
@@ -120,6 +140,11 @@ public class Sort implements ISort {
         return set;
     }
 
+    /**
+     * sort games by ratings
+     * @param games Game set after filtering by least total ratings
+     * @return sorted treemap
+     */
     @Override
     public TreeMap<Double, TreeSet<Entry<Integer, Game>>> byRating(Set<Game> games) {
         TreeMap<Double, TreeSet<Entry<Integer, Game>>> treeMap = new TreeMap<>(
@@ -162,7 +187,13 @@ public class Sort implements ISort {
         return treeMap;
     }
 
-    
+    /**
+     * get the set of games with specific tag
+     * @param games Game set after filtering by least total ratings
+     * @param tagMap tag map of tag-game names pair
+     * @param tag A specific tag
+     * @return the set of games
+     */
     @Override
     public Set<Game> searchByTag(Set<Game> games, Map<String, Set<String>> tagMap, 
             String tag) {
@@ -176,6 +207,16 @@ public class Sort implements ISort {
         return set;
     }
 
+    /**
+     * get treeset of games that satisfies three conditions: price tag and rating
+     * @param games
+     * @param priceString
+     * @param ratingString
+     * @param tag
+     * @param order
+     * @param tagMap
+     * @return the set of games that satisfies three conditions
+     */
     @Override
     public TreeSet<Entry<Integer, Game>> byThreeConditions(Set<Game> games, 
             String priceString, String ratingString, String tag, boolean order, 
@@ -260,6 +301,12 @@ public class Sort implements ISort {
         return result;
     }
 
+    /**
+     * sort games by the companies
+     * @param companyMap
+     * @param gameMap
+     * @return a sorted treemap of games
+     */
     @Override
     public TreeMap<String, TreeSet<Entry<Integer, Game>>> byCompany(Map<String, Company> companyMap,
             Map<Integer, Game> gameMap) {
@@ -318,8 +365,4 @@ public class Sort implements ISort {
         }
         return map;
     }
-    
-    
-    
-    
 }

@@ -27,6 +27,9 @@ public class NewlyReleasedPane extends PortfolioPane {
         panel.setBorder(border);
     }
 
+    /**
+     * update posts by selecting some games in the most recent year
+     */
     @Override
     public void updatePosts() {
         Random random = new Random();

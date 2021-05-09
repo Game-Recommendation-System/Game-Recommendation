@@ -53,10 +53,6 @@ public class Autocomplete implements IAutocomplete {
 
     /**
      * Initializes the Trie
-     *
-     * @param filename the file to read all the autocomplete data from each line
-     *                 contains a word and its weight This method will call the
-     *                 addWord method
      * @param k        the maximum number of suggestions that should be displayed
      * @return the root of the Trie You might find the readLine() method in
      *         BufferedReader useful in this situation as it will allow you to read

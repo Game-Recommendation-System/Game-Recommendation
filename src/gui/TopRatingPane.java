@@ -19,6 +19,7 @@ public class TopRatingPane extends PortfolioPane {
     
     private Set<Entry<Integer, Game>> set;
 
+
     public TopRatingPane() {
         super();
         setTitle("Top Rating Games");
@@ -41,6 +42,9 @@ public class TopRatingPane extends PortfolioPane {
         
     }
 
+    /**
+     * update post by selecting some games with high rating(>=9.8) randomly
+     */
     @Override
     public void updatePosts() {
         Random random = new Random();

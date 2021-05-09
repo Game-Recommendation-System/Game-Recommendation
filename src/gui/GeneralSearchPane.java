@@ -415,7 +415,6 @@ public class GeneralSearchPane extends JInternalFrame {
          * @param text string to search for
          */
         public void getSuggestions(String text) {
-
             // don't search for suggestions if there is no input
             if (text.equals("")) {
                 suggestions.setListData(new String[0]);

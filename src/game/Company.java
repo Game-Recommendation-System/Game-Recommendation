@@ -53,6 +53,12 @@ public class Company implements ICompany {
         this.averageRating = averageRating;
     }
 
+    /**
+     * The comparator that define how to compare two companies
+     * first gameNumber, then averageRating, then companies' name
+     * @param that the company that compared to
+     * @return
+     */
     @Override
     public int compareTo(ICompany that) {
         Company companyThat = (Company) that;

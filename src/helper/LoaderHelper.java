@@ -105,8 +105,13 @@ public class LoaderHelper {
         }
         return companys;
     }
-    
-    
+
+    /**
+     * Helper function for reading in all data from .csv file
+     * and configure tag map
+     * @param filename The filename of the data source
+     * @return a treemap with tags and related game names
+     */
     public static Map<String, Set<String>> readTags(String filename) {
         Map<String, Set<String>> tagNamePairs = new TreeMap<>(new Comparator<String>() {
 

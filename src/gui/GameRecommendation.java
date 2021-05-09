@@ -164,8 +164,12 @@ public class GameRecommendation {
             backLabel.setIcon(new ImageIcon("welcome.jpg"));
         }
     }
-    
-    // get the unique internal JFrame
+
+    /**
+     * get the unique internal JFrame
+     * @param frameName
+     * @return the specific internal JFrame
+     */
     private JInternalFrame getIFrame(String frameName) {
         JInternalFrame jf = null;
         if (!ifs.containsKey(frameName)) {

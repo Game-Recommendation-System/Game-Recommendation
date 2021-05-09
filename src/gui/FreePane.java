@@ -28,7 +28,9 @@ public class FreePane extends PortfolioPane {
     }
 
 
-
+    /**
+     * update posts by selecting free games randomly
+     */
     @Override
     public void updatePosts() {
         Random random = new Random();

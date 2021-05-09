@@ -61,7 +61,7 @@ public class Game implements IGame {
      * @param name
      * @param company
      * @param price
-     * @param releaseDate
+     * @param releaseYear
      * @param totalNumberOfRatings
      * @param rating
      * @param header
@@ -219,8 +219,8 @@ public class Game implements IGame {
     
     /**
      * Split the string if it is too long. This is to fit each post
-     * @param text
-     * @return
+     * @param text Text that may needs adjust
+     * @return adjusted string
      */
     private String splitLongString(String text) {
         StringBuilder stringBuilder = new StringBuilder();
