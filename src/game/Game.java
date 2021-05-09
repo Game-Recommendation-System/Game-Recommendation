@@ -208,13 +208,35 @@ public class Game implements IGame {
     public String getPost() {
         String text = "<html><div>\r\n" + 
                 "<img src='" + header + "' alt='error.jpg' width='200' height='150'/>\r\n" + 
-                "<div><h4>" + name + "</h4>"
-                + "<p> " + company + " published in " + releaseYear + "</p>\r\n" + 
+                "<div>" + splitLongString(name)
+                + "<p>" + splitLongString(company + " published in " + releaseYear) + "</p>" + 
                 "<div>$" + price + "</div><div>rating: " + rating + "</div>\r\n" + 
                 "<div>" + totalNumberOfRatings + " comments</div>\r\n" + 
                 "<div>platforms: " + Arrays.toString(platforms) + "</div>\r\n" + 
                 "</div></div></html>";
         return text;
+    }
+    
+    /**
+     * Split the string if it is too long. This is to fit each post
+     * @param text
+     * @return
+     */
+    private String splitLongString(String text) {
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder tmp = new StringBuilder("<div>");
+        for (String string : new String(text).split("\\s+")) {
+            if (tmp.length() + string.length() < 35) {
+                tmp.append(string).append(" ");
+            } else {
+                tmp.append("</div>");
+                stringBuilder.append(tmp.toString());
+                tmp = new StringBuilder("<div>");
+                tmp.append(string).append(" ");
+            }
+        }
+        stringBuilder.append(tmp.toString()).append("</div><div></div>");
+        return stringBuilder.toString();
     }
     
 }

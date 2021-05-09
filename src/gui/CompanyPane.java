@@ -49,9 +49,11 @@ public class CompanyPane extends JInternalFrame {
         setTitle("Recommend by Popular Companies");
         setBounds(50, 50, 1000, 500);
         getContentPane().setLayout(new BorderLayout());
+        
+        // set button
         Box topBox = Box.createHorizontalBox();
         topBox.add(Box.createHorizontalGlue());
-        JButton jButton = new JButton("click here to change recommendation");
+        JButton jButton = new JButton("click here to change a group of recommendation");
         jButton.addActionListener(new ClickActionListener());
         jButton.setFont(new Font("Verdana", Font.BOLD, 15));
         topBox.add(jButton);
@@ -68,7 +70,7 @@ public class CompanyPane extends JInternalFrame {
         
         // arrange all components
         Box box = Box.createHorizontalBox(); // container for game posts
-        box.add(Box.createHorizontalGlue());
+        box.add(Box.createHorizontalStrut(10));
         for (int j = 0; j < gameJLabels.length; j++) {
             box.add(gameJLabels[j]);
             box.add(Box.createHorizontalStrut(10));
@@ -92,8 +94,14 @@ public class CompanyPane extends JInternalFrame {
         // update each JLabel of game post
         TreeSet<Entry<Integer, Game>> set = map.get(company);
         Object[] values = set.toArray();
+        int size = set.size();
+        boolean[] flags = new boolean[size];
         for (int j = 0; j < gameJLabels.length; j++) {
-            index = random.nextInt(set.size());
+            index = random.nextInt(size);
+            while (flags[index]) {
+                index = random.nextInt(size);
+            }
+            flags[index] = true;
             Game game = ((Map.Entry<Integer, Game>) values[j]).getValue();
             gameJLabels[j].setText(game.getPost());
         }

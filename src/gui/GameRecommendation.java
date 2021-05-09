@@ -67,30 +67,30 @@ public class GameRecommendation {
      * Init the menu bar
      */
     public void initMenu() {       
-        generalSearchItem.addActionListener(new openFrameAction(
+        generalSearchItem.addActionListener(new OpenFrameAction(
                 "GeneralSearchPane"));
-        conditionalSearchItem.addActionListener(new openFrameAction(
+        conditionalSearchItem.addActionListener(new OpenFrameAction(
                 "ConditionalSearchPane"));
         searchMenu.add(generalSearchItem);
         searchMenu.add(conditionalSearchItem);
         menuBar.add(searchMenu);
         
-        newlyReleasedItem.addActionListener(new openFrameAction(
+        newlyReleasedItem.addActionListener(new OpenFrameAction(
                 "NewlyReleasedPane"));
-        topRatingItem.addActionListener(new openFrameAction(
+        topRatingItem.addActionListener(new OpenFrameAction(
                 "TopRatingPane"));
-        freeItem.addActionListener(new openFrameAction("FreePane"));
+        freeItem.addActionListener(new OpenFrameAction("FreePane"));
         portfolio.add(topRatingItem);
         portfolio.add(newlyReleasedItem);
         portfolio.add(freeItem);
         menuBar.add(portfolio);
         
-        historyItem.addActionListener(new openFrameAction(
+        historyItem.addActionListener(new OpenFrameAction(
                 "HistoryPane"));
         history.add(historyItem);
         menuBar.add(history);
         
-        companyItem.addActionListener(new openFrameAction(
+        companyItem.addActionListener(new OpenFrameAction(
                 "CompanyPane"));
         company.add(companyItem);
         menuBar.add(company);
@@ -123,10 +123,10 @@ public class GameRecommendation {
      * @author yifan
      *
      */
-    protected final class openFrameAction extends AbstractAction {
+    protected final class OpenFrameAction extends AbstractAction {
         private static final long serialVersionUID = 1L;
         private String frameName = null;
-        private openFrameAction(String frameName) {
+        private OpenFrameAction(String frameName) {
             this.frameName = frameName;
         }
         

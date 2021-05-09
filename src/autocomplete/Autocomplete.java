@@ -5,13 +5,13 @@ import java.util.*;
 import game.*;
 import helper.LoaderHelper;
 
-public class Autocomplete2 implements IAutocomplete {
+public class Autocomplete implements IAutocomplete {
 
     private Node root;
     private int limitDisplay;
     private List<ITerm> suggestion;
     private Map<Integer, Game> gameMap;
-    public Autocomplete2() {
+    public Autocomplete() {
         setRoot(new Node("", 0));
     }
 
@@ -73,7 +73,7 @@ public class Autocomplete2 implements IAutocomplete {
         gameMap = LoaderHelper.readGames("Game.csv");
         // create a new Trie
         setRoot(new Node("", 0));
-        for (Map.Entry<Integer, Game> game: gameMap.entrySet()){
+        for (Map.Entry<Integer, Game> game: gameMap.entrySet()) {
             String gameName = game.getValue().getName();
             addWord(gameName,0);
         }
@@ -129,9 +129,7 @@ public class Autocomplete2 implements IAutocomplete {
         int i = 0;
         while (i < prefix.length()) {
             int pos = prefix.charAt(i) - 'a';
-//            if (temp.getReferences()[pos] != null) {
             if (temp.getReferences().containsKey(pos)) {
-//                temp = temp.getReferences()[pos];
                 temp = temp.getReferences().get(pos);
                 i++;
             } else {
@@ -188,10 +186,10 @@ public class Autocomplete2 implements IAutocomplete {
             getSuggestionArray().add(newTerm);
             return;
         }
-        for (Map.Entry<Integer, Node> curr: node.getReferences().entrySet()){
+        for (Map.Entry<Integer, Node> curr: node.getReferences().entrySet()) {
             int target = 'a' + curr.getKey();
             char chr = (char) target;
-            dfs(node.getReferences().get(curr.getKey()), path+chr);
+            dfs(node.getReferences().get(curr.getKey()), path + chr);
         }
         return;
     }

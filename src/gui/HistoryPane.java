@@ -75,7 +75,7 @@ public class HistoryPane extends JInternalFrame {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         defaultTableModel = (DefaultTableModel) table.getModel();
         String[] head = new String[] {"Release Year", "Name", "Company", 
-                "Price", "Rating", "Description"};
+            "Price", "Rating", "Description"};
         defaultTableModel.setColumnIdentifiers(head);
         table.getColumnModel().getColumn(5).setPreferredWidth(2000);
         scrollPane.setViewportView(table);

@@ -110,7 +110,7 @@ public class ConditionalSearchPane extends JInternalFrame {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         defaultTableModel = (DefaultTableModel) table.getModel();
         String[] head = new String[] {"Name", "Company", "Platform", "Price", 
-                "Release Year", "Rating", "Description"};
+            "Release Year", "Rating", "Description"};
         defaultTableModel.setColumnIdentifiers(head);
         table.getColumnModel().getColumn(6).setPreferredWidth(2000);
         scrollPane.setViewportView(table);

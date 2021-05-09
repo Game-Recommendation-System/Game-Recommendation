@@ -40,7 +40,7 @@ public class GeneralSearchPane extends JInternalFrame {
      *
      * @param k        the maximum number of suggestions to return
      */
-    public GeneralSearchPane(){
+    public GeneralSearchPane() {
         setTitle("Search for Games");
         setPreferredSize(new Dimension(DEF_WIDTH, DEF_HEIGHT));
         pack();
@@ -57,7 +57,7 @@ public class GeneralSearchPane extends JInternalFrame {
 
         JLabel textLabel = new JLabel("Search game:");
         // Create and add a listener to the Search button
-        JButton searchButton = new JButton("Search Steam");
+        JButton searchButton = new JButton("Search on Steam");
         JLabel image = new JLabel(new ImageIcon("bear.jpeg"));
         image.setBorder(new EmptyBorder(20,100,50,180));
         searchButton.addActionListener(new ActionListener() {
@@ -70,7 +70,7 @@ public class GeneralSearchPane extends JInternalFrame {
         // Define the layout of the window
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                        .addComponent(textLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                .addComponent(textLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
                         GroupLayout.DEFAULT_SIZE)
@@ -78,8 +78,8 @@ public class GeneralSearchPane extends JInternalFrame {
                         .addComponent(sp, 0, GroupLayout.DEFAULT_SIZE, DEF_WIDTH)
                         .addComponent(image, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE))
-                .addComponent(searchButton,
-                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE));
+                .addComponent(searchButton, GroupLayout.PREFERRED_SIZE, 
+                        GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(image)
@@ -107,10 +107,11 @@ public class GeneralSearchPane extends JInternalFrame {
         private int extraMargin = 5;
 
         // number of columns in the search text that is kept
-        private final int DEF_COLUMNS = 45;
+        private static final int DEF_COLUMNS = 45;
 
         // an example of one of the longest strings in the database
-        private final String suggListLen = "<b>Harry Potter and the Deathly Hallows: Part 1 (2010)</b>";
+        private final String suggListLen = "<b>Harry Potter and the "
+                + "Deathly Hallows: Part 1 (2010)</b>";
 
         /**
          * Creates the Autocomplete object and the search bar and suggestion drop-down
@@ -120,7 +121,7 @@ public class GeneralSearchPane extends JInternalFrame {
         public SearchPanel() {
             super();
 
-            auto = new Autocomplete2();
+            auto = new Autocomplete();
             auto.buildTrie(K);
 
             GroupLayout layout = new GroupLayout(this);
@@ -464,8 +465,8 @@ public class GeneralSearchPane extends JInternalFrame {
 
                         // create the table HTML
                         results[i] = "<html><table width=\"" + searchText.getPreferredSize().width
-                                + "\">" + "<tr><td align=left>" + query.substring(0, textLen) + "<b>"
-                                + query.substring(textLen) + "</b>";
+                                + "\">" + "<tr><td align=left>" + query.substring(0, textLen)
+                                + "<b>" + query.substring(textLen) + "</b>";
                         results[i] += "</table></html>";
                     }
                     suggestions.setListData(results);

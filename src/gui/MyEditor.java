@@ -7,9 +7,11 @@ import javax.swing.plaf.basic.BasicComboBoxEditor;
 public class MyEditor extends BasicComboBoxEditor {
     JScrollPane scroller = new JScrollPane();
 
-    public MyEditor(){
+    public MyEditor() {
         super();
         scroller.setHorizontalScrollBarPolicy(
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroller.setVerticalScrollBarPolicy(
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
 }
