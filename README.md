@@ -10,7 +10,7 @@ By Fan Yi, Tong Fu, Hanye Wang
 
 Finding a game that fits your mind is not an easy task. This game recommendation application aims to help you solve this tricky issue. It collects information of tons of game in steam, including their names, companies, release date, price, rating, description, etc, and the users can customize the filters to find the ideal game(s), and get more information about the game they are looking for.
 
-Major **data structures** used in this project: Trie, ArrayList, HashMap, TreeMap.
+Major **data structures** used in this project: Trie, ArrayList, HashMap, TreeMap, SortedMap, TreeSet, HashSet.
 
 **Data** used in this project: Company.csv (12432 items), Game.csv (22465 items)
 
