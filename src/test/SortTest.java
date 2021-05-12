@@ -119,7 +119,7 @@ public class SortTest {
         TreeMap<String, TreeSet<Entry<Integer, Game>>> map = 
                 s.byCompany(originCompMap, fullGamesMap);
         assertEquals("Big Fish Games", map.firstKey());
-        assertEquals(453390, (int) map.firstEntry().getValue().last().getKey());
-        assertEquals(596270, (int) map.firstEntry().getValue().first().getKey());
+        assertEquals(596270, (int) map.firstEntry().getValue().last().getKey());
+        assertEquals(453390, (int) map.firstEntry().getValue().first().getKey());
     }
 }
