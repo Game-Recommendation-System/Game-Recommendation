@@ -12,7 +12,7 @@ Finding a game that fits your mind is not an easy task. This game recommendation
 
 Major **data structures** used in this project: Trie, ArrayList, HashMap, TreeMap, SortedMap, TreeSet, HashSet.
 
-**Data** used in this project: Company.csv (12432 items), Game.csv (22465 items)
+**Data** used in this project: Company.csv (12432 items), Game.csv (22465 items), GameTag.csv (64707 items)
 
 ***
 
